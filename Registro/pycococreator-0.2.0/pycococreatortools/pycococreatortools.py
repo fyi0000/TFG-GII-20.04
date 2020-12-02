@@ -112,15 +112,13 @@ def create_annotation_info(annotation_id, image_id, category_info, binary_mask,
             return None
 
     annotation_info = {
-        "id": annotation_id,
-        "image_id": image_id,
-        "category_id": category_info["id"],
+        "segmentation": segmentation,
         "iscrowd": is_crowd,
         "area": area.tolist(),
+        "image_id": image_id,
         "bbox": bounding_box.tolist(),
-        "segmentation": segmentation,
-        "width": binary_mask.shape[1],
-        "height": binary_mask.shape[0],
+        "category_id": category_info["id"],
+        "id": annotation_id,
     } 
 
     return annotation_info
