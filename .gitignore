@@ -1,3 +1,5 @@
 IMG/
 venv/
+detectron2/
+cocoapi/
 modelo.pth

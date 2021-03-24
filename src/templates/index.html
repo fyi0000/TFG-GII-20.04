@@ -1,0 +1,41 @@
+<!--Testeado en Tryit Editor para previsualizarlo facilmente-->
+
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<h1 style="text-align:center;">Detección de Defectos</h1>
+	</head>
+	<body>
+		<form style="text-align:center;" action= /detect method= "POST" enctype="multipart/form-data">
+			<input type = "file" name = "image" id="image" class="custom-file-input"/><br>
+			<input name = "submit" type = "submit"/>
+		</form>
+
+		{% if show_hidden %}
+				<div style="text-align: center;">
+					<embed style="text-align:center;" src="{{ urlGraph }}" width="{{ widthHTML }}" height="{{ heightHTML }}" >
+				</div>
+				<div style="text-align: center; margin-top:10px;">
+					<img style="text-align:center;" src="{{ deteccion }}" width="{{ widthHTML }}" height="{{ heightHTML }}">
+				</div>
+		{% endif %}
+		{% if buttonsRes %}
+				<form style="text-align:center; margin-top:10px;" action= /detect method= "POST" enctype="multipart/form-data">
+					<input type="submit" name="Volver" value="Volver">
+				</form>
+				<form style="text-align:center; margin-top:10px;" action= /hist method= "POST" enctype="multipart/form-data">
+					<input type="submit" name="Historico" value="Historico">
+				</form>
+		{% endif %}
+				</p>
+
+		{% if histBool %}
+					<div style="text-align: center;">
+					<embed style="text-align:center;" src="{{ urlGraphL }}" width="{{ widthHTML }}" height="{{ heightHTML }}" >
+				</div>
+		{% endif %}
+
+	</body>
+</html>
+
