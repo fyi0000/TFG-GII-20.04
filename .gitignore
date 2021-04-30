@@ -3,3 +3,4 @@ venv/
 detectron2/
 cocoapi/
 modelo.pth
+*.driveupload

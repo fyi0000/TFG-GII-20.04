@@ -1,0 +1,118 @@
+.encabezado_index {
+  color: black;
+  text-align: center;
+  margin-top: 110px;
+  margin-left: 5px;
+}
+
+.encabezado {
+  color: black;
+  text-align: center;
+  margin-left: 5px;
+}
+
+.listado {
+  color: black;
+  text-align: left;
+  font-size: 20px;
+  margin-top: 25px;
+  margin-left: 10px;
+}
+
+.btn-group{
+  padding: 1em 35% 2em;
+}
+.subir_boton{
+  margin-left: 10px;
+}
+
+.vista_previa{
+  text-align:center;
+}
+
+.resultados{
+  text-align:center;
+}
+#boton_grupoDescargas{
+  margin-left: 50px;
+  margin-top: 10px;
+  margin-bottom: 500px;
+}
+
+#boton_grupoOpcionesDescargas{
+  display: none;
+}
+
+#volver{
+  text-align: center;
+}
+
+#loader_id{
+  display: none;
+}
+
+#botonActualizar{
+  display: none;
+}
+
+#loader_updating{
+  margin-top: 10px;
+  display: none;
+}
+
+.comenzar{
+  text-align: center;
+}
+
+.gridUpdater{
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr auto; 
+  text-align: center; 
+  max-width: 500px;
+  margin: auto;
+  position: absolute;
+  top: 50px;
+  right: 0;
+}
+
+.gridUpdater > div{
+  margin-left: 5px;
+  display: block;
+  text-align: left;
+}
+
+
+ul {
+  display: table;
+  margin: 0 auto;
+}
+
+.loader {
+  display: block;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #2e2c2f;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+.loadersmall {
+  border: 3px solid #f3f3f3;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  border-top: 5px solid #2e2c2f;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

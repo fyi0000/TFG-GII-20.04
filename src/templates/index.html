@@ -1,41 +1,103 @@
-<!--Testeado en Tryit Editor para previsualizarlo facilmente-->
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock%}
+{% block content %}
 
-<!DOCTYPE html>
-<html lang="es">
-	<head>
-		<meta charset="UTF-8">
-		<h1 style="text-align:center;">Detección de Defectos</h1>
-	</head>
-	<body>
-		<form style="text-align:center;" action= /detect method= "POST" enctype="multipart/form-data">
-			<input type = "file" name = "image" id="image" class="custom-file-input"/><br>
-			<input name = "submit" type = "submit"/>
-		</form>
+<script type=text/javascript>
 
-		{% if show_hidden %}
-				<div style="text-align: center;">
-					<embed style="text-align:center;" src="{{ urlGraph }}" width="{{ widthHTML }}" height="{{ heightHTML }}" >
-				</div>
-				<div style="text-align: center; margin-top:10px;">
-					<img style="text-align:center;" src="{{ deteccion }}" width="{{ widthHTML }}" height="{{ heightHTML }}">
-				</div>
-		{% endif %}
-		{% if buttonsRes %}
-				<form style="text-align:center; margin-top:10px;" action= /detect method= "POST" enctype="multipart/form-data">
-					<input type="submit" name="Volver" value="Volver">
-				</form>
-				<form style="text-align:center; margin-top:10px;" action= /hist method= "POST" enctype="multipart/form-data">
-					<input type="submit" name="Historico" value="Historico">
-				</form>
-		{% endif %}
-				</p>
+  $(function() {
+    $(document).ready( function () {
+      $.ajax({
+        url: '/checkModelVersion',
+        dataType: 'JSON',
+        type: 'POST',
+        success: function(data) {
+          if (data.status == 'Updated'){
+            document.getElementById('mensajeU').innerText = 'El modelo esta actualizado v'+data.recentVersion
+            document.getElementById('mensajeU').style.color = 'green';
 
-		{% if histBool %}
-					<div style="text-align: center;">
-					<embed style="text-align:center;" src="{{ urlGraphL }}" width="{{ widthHTML }}" height="{{ heightHTML }}" >
-				</div>
-		{% endif %}
+          }else if(data.status == 'Outdated'){
+            document.getElementById('mensajeU').innerText = 'Nueva Version del Modelo Disponible. Version Actual: '+data.oldVersion+' Nueva version: '+data.recentVersion
+            document.getElementById('mensajeU').style.color = 'brown';
+            document.getElementById('botonActualizar').style.display = 'block';
 
-	</body>
-</html>
+          }else{
+            document.getElementById('mensajeU').innerText = 'Error al comprobar el modelo local o remoto.'
+            document.getElementById('mensajeU').style.color = 'red';
+          }
+        }
+      });
+    });
+  });
+  $(function() {
+    $("#botonActualizar").click(function() {
+      document.getElementById('botonComenzar').style.display = 'none';
+      document.getElementById('mensajeU').style.display = 'none';
+      loading();
+      $.ajax({
+          url: '/updateModel',
+          dataType: 'JSON',
+          type: 'POST',
+          success: function(data) {
+            loading();
+            if (data.status == 'OK'){
+              document.getElementById('mensajeU').innerText = data.message
+              document.getElementById('mensajeU').style.color = 'green';
+              document.getElementById('mensajeU').style.display = 'inline';
+              document.getElementById('botonActualizar').style.display = 'none';
 
+            }else if (data.status == 'Error'){
+              document.getElementById('mensajeU').innerText = data.message
+              document.getElementById('mensajeU').style.color = 'green';
+              document.getElementById('mensajeU').style.display = 'inline';
+              document.getElementById('botonActualizar').style.display = 'none';
+            }else{
+              document.getElementById('mensajeU').innerText = 'Error al comprobar el modelo local o remoto.'
+              document.getElementById('mensajeU').style.color = 'red';
+              document.getElementById('mensajeU').style.display = 'inline';
+            }
+            document.getElementById('botonComenzar').style.display = 'inline';
+          }
+      });
+    });
+  });
+  
+  function loading() {
+    if (document.getElementById('loader_updating').style.display == "block") {
+      document.getElementById('loader_updating').style.display = "none";
+    } else {
+      document.getElementById('loader_updating').style.display = "block";
+    }
+  }
+
+</script>
+
+<div class="encabezado_index">
+  <h1>Inicio</h1>
+</div>
+
+<div class="listado">
+  <ul>
+    <li>Detector de defectos métalicos basado en Detectron 2.</li>
+    <li>Autor: Fco Javier Yagüe Izquierdo.</li>
+    <li>Año: 2021</li>
+  </ul>
+</div>
+
+<div class="comenzar">
+  <a id="botonComenzar" type="button" href=/upload class="btn btn-primary btn-lg">Detectar &gt</a>
+</div>
+
+<div id="updater" class="gridUpdater">
+  <div id="loader">
+    <div id="loader_updating" class="loadersmall"></div>
+  </div>
+
+  <div id="mensajeUpdater">
+    <b><label id='mensajeU'></label></b>
+  </div>
+
+  <div id="botonUpdaterDiv">
+    <button id='botonActualizar' type="button" class="btn btn-success btn-sm">Actualizar Modelo</button>
+  </div>
+
+  {% endblock %}

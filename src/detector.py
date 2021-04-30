@@ -27,12 +27,12 @@ from PIL import Image
 
 class Detector:
 
-    def __init__(self):
+    def __init__(self, modelo, confianza=0.7):
         self.cfg = get_cfg()  # Configuracion por defecto
         self.cfg.merge_from_file("./configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
         self.cfg.MODEL.DEVICE = "cpu"
-        self.cfg.MODEL.WEIGHTS = "model_final.pth"  # Carga del fichero modelo
-        self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9  # Confianza limite, posterior edicion
+        self.cfg.MODEL.WEIGHTS = modelo  # Carga del fichero modelo
+        self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = confianza  # Confianza limite, posterior edicion
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
 
     def inference(self, fichero):
@@ -46,6 +46,7 @@ class Detector:
         v = Visualizer(im[:, :, ::-1])
         v = v.draw_instance_predictions(salida.to("cpu"))
         resultado = v.get_image()[:, :, ::-1]
+        print(len(resultado))
 
         nombreDeteccion = fichero[:-4] + '_DETECTED.png'
         print(nombreDeteccion)
@@ -56,6 +57,10 @@ class Detector:
     def getOutputMask(self, salida):
         pred = salida.get('pred_masks')
         pred = pred.to("cpu").numpy()
+
+        if pred.size == 0:
+            return 'Sin Defectos'
+
         mask = pred[0].astype(bool)
         maskAux = np.zeros_like(mask)
 
