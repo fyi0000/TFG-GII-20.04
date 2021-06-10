@@ -2,6 +2,6 @@
 
 import gdown
 
-url="https://drive.google.com/uc?id=1Pt8Q7kT1ytPk9gBrHBpQBOlfKS1NEUmK"
+url="https://drive.google.com/uc?id=1eZmZHQlgH7A3NjsAAQfoOqkQ8U05zPTv"
 
 gdown.download(url, output='./modelo-0.1.pth', quiet=True)

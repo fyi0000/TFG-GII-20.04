@@ -114,7 +114,7 @@ def deteccion():
     # Extraccion de mascaras
     masks = dt.getOutputMask(salida)
 
-    if masks == 'Sin Defectos':
+    if masks == 'Sin Defectos' or masks.size == 0:
         fig = px.imshow(im)
         fig.update_traces(hoverinfo='skip')
         nombreGraph = "./static/uploads/graph_" + \
@@ -353,7 +353,8 @@ def checkModelVersion():
 
     if os.path.exists("modelos.json"):
         os.remove("modelos.json") # if exist, remove it directly
-    ficheroJson = wget.download('https://raw.githubusercontent.com/fyi0000/HolaMundoTarea/master/modelos.json')
+
+    ficheroJson = wget.download('https://raw.githubusercontent.com/fyi0000/TFG-GII-20.04/main/modelos.json')
     with open("modelos.json", "r") as fich:
         dictModelos = json.load(fich)
             
