@@ -16,9 +16,9 @@
             document.getElementById('mensajeU').style.color = 'green';
 
           }else if(data.status == 'Outdated'){
-            document.getElementById('mensajeU').innerText = 'Nueva Version del Modelo Disponible. Version Actual: '+data.oldVersion+' Nueva version: '+data.recentVersion
+            document.getElementById('mensajeU').innerText = 'Nueva Versión del Modelo Disponible. Versión Actual: '+data.oldVersion+' Nueva Versión: '+data.recentVersion
             document.getElementById('mensajeU').style.color = 'brown';
-            document.getElementById('botonActualizar').style.display = 'block';
+            document.getElementById('botonActualizar').style.display = 'grid';
 
           }else{
             document.getElementById('mensajeU').innerText = 'Error al comprobar el modelo local o remoto.'
@@ -32,6 +32,7 @@
     $("#botonActualizar").click(function() {
       document.getElementById('botonComenzar').style.display = 'none';
       document.getElementById('mensajeU').style.display = 'none';
+      document.getElementById('botonActualizar').style.display = 'none';
       loading();
       $.ajax({
           url: '/updateModel',
@@ -88,16 +89,19 @@
 </div>
 
 <div id="updater" class="gridUpdater">
+
   <div id="loader">
     <div id="loader_updating" class="loadersmall"></div>
-  </div>
-
-  <div id="mensajeUpdater">
-    <b><label id='mensajeU'></label></b>
   </div>
 
   <div id="botonUpdaterDiv">
     <button id='botonActualizar' type="button" class="btn btn-success btn-sm">Actualizar Modelo</button>
   </div>
 
-  {% endblock %}
+  <div id="mensajeUpdater">
+    <b><label id='mensajeU'></label></b>
+  </div>
+
+
+</div>
+{% endblock %}

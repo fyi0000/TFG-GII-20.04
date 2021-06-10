@@ -31,33 +31,70 @@
 }
 
 .resultados{
-  text-align:center;
+  display: grid;
+  align-content: center;
+  text-align: center;
+  grid-template-areas: 'imagen botones' 'volver volver';
 }
+
+.graficoResultado{
+  grid-area: imagen;
+  justify-self: end;
+}
+
 #boton_grupoDescargas{
-  margin-left: 50px;
-  margin-top: 10px;
-  margin-bottom: 500px;
+  grid-area: botones;
+  justify-self: start;
+  align-self: center;
+  padding-left: 10px;
 }
 
 #boton_grupoOpcionesDescargas{
+  margin-top: 10px;
   display: none;
 }
 
-#volver{
-  text-align: center;
+#boton_grupoDinamico{
+  grid-area: botones;
+  justify-self: start;
+  align-self: center;
+  padding-left: 10px;
+}
+
+
+.conjunto_confianza{
+  grid-area: confianza;
+  margin: auto;
+}
+
+.boton_atras{
+  grid-area: volver;
+  margin: auto;
 }
 
 #loader_id{
   display: none;
+  top: 8px;
+  right: 16px;
 }
 
 #botonActualizar{
   display: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 
 #loader_updating{
   margin-top: 10px;
   display: none;
+}
+
+#fichero_incompatible{
+  color: red;
+  text-align: center;
 }
 
 .comenzar{
@@ -67,8 +104,9 @@
 .gridUpdater{
   padding: 10px;
   display: grid;
-  grid-template-columns: auto 1fr auto; 
+  grid-template-columns: auto auto auto; 
   text-align: center; 
+  place-items: center;
   max-width: 500px;
   margin: auto;
   position: absolute;
@@ -78,8 +116,8 @@
 
 .gridUpdater > div{
   margin-left: 5px;
-  display: block;
   text-align: left;
+  border: 5px black;  
 }
 
 

@@ -31,6 +31,12 @@
   </div>
 </form>
 
+{% if fichero_incompatible %}
+<div id="fichero_incompatible">
+  <b><label id='mensajeU'>Fichero incompatible. Formatos aceptados: PNG y JPG/JPEG</label></b>
+</div>
+{% endif %}
+
 {% endif %}
 
 {% if mostrar_preview %}
@@ -56,15 +62,18 @@
   </form>
 </div>
 {% endif %}
-<div class="resultados">
+
+<div class="loaderDiv">
   <div id="loader_id" class="loader"></div>
 </div>
 
 {% if mostrar_resultado %}
 
 <div id="conjunto_resultados" class="resultados">
-  <embed src="{{ result }}" width="{{ anchoGrafico }}" height="{{ altoGrafico }}">
-
+  <div class="graficoResultado">
+    <embed src="{{ result }}" width="{{ anchoGrafico }}" height="{{ altoGrafico }}">
+  </div>
+  
   {% if conDefectos %}
   <div id="boton_grupoDescargas" class="btn-group-vertical">
     <button id="boton_descargaMascara" class="btn btn-primary"
@@ -81,16 +90,19 @@
   </div>
 
   {% else %}
- 
-  <button class="btn btn-primary"
-  onclick="window.location.href='{{ url_for( 'descargarDinamico') }}';">Dinámico</button>
-  <b><label>Sin defectos detectados</label></b>
+  <div id="boton_grupoDinamico" class='botonSoloDinamico'>
+    <button class="btn btn-primary"
+      onclick="window.location.href='{{ url_for( 'descargarDinamico') }}';">Descargar Resultado Dinámico</button>
+    <b><label>Sin defectos detectados</label></b>
+  </div>
   {% endif %}
 
+  <div class="boton_atras" id="volver">
+    <a type="button" href=/upload class="btn btn-primary"> &ltVolver</a>
+  </div>
+
 </div>
-<div class="boton_atras" id="volver">
-  <a type="button" href=/upload class="btn btn-primary"> &ltVolver</a>
-</div>
+
 
 {% endif %}
 

@@ -35,8 +35,8 @@ class Detector:
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = confianza  # Confianza limite, posterior edicion
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
 
+    # Aplicacion del modelo a la imagen pasada por parametro, se genera una imagen resultado con el subfijo correspondiente
     def inference(self, fichero):
-        print(fichero)
         im = cv2.imread(fichero)
         predictor = DefaultPredictor(self.cfg)
         outputs = predictor(im)
@@ -46,67 +46,26 @@ class Detector:
         v = Visualizer(im[:, :, ::-1])
         v = v.draw_instance_predictions(salida.to("cpu"))
         resultado = v.get_image()[:, :, ::-1]
-        print(len(resultado))
 
         nombreDeteccion = fichero[:-4] + '_DETECTED.png'
-        print(nombreDeteccion)
         cv2.imwrite(nombreDeteccion, resultado)
 
         return salida
 
+    #Extraccion las mascaras resultado de la ejecucion 
     def getOutputMask(self, salida):
         pred = salida.get('pred_masks')
-        pred = pred.to("cpu").numpy()
-
-        if pred.size == 0:
+        masks = pred.to("cpu").numpy()
+        
+        if pred.size == 0: # Si no hay detecciones, valor en cadena para el mensaje de JavaScript
             return 'Sin Defectos'
 
-        mask = pred[0].astype(bool)
-        maskAux = np.zeros_like(mask)
+        return masks
 
-        for i in range(len(pred)):
-            mask = pred[i].astype(bool)
-            maskAux = maskAux + pred[i]
-            maskAux[maskAux > 1] = 1
-
-        mask = maskAux.astype(bool)
-
-        return mask
-
+    #Extraccion de la lista de confianza de las detecciones
     def getConfidence(self, salida):
         porcentajes = salida.get('scores')
-
         return porcentajes.tolist()
 
-    def getClassList(self, salida):
-        # Etiquetado por tamaño de cada defecto
-
-        pred = salida.get('pred_masks')
-        pred = pred.to("cpu").numpy()
-        mask = pred[0].astype(bool)
-        maskAux = np.zeros_like(mask)
-
-        for i in range(len(pred)):
-            mask = pred[i].astype(bool)
-            maskAux = maskAux + pred[i]
-            maskAux[maskAux > 1] = 1
-
-        mask = maskAux.astype(bool)
-
-        sizes = []
-
-        for i in range(len(pred)):  # Si hay mas de un defecto, recorrer instancias y unir imagenes
-            mask = pred[i].astype(bool)
-            labelImagen = label(mask)
-
-            for prop in regionprops(labelImagen):
-                if prop.area >= 200:
-                    sizes.append('Big')
-                elif prop.area >= 100:
-                    sizes.append('Medium')
-                else:
-                    sizes.append('Small')
-
-        return sizes
-
+   
 
