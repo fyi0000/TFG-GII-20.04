@@ -40,7 +40,8 @@ import wget
 
 from flask import Flask, flash, redirect, url_for, render_template, session, request, after_this_request, flash, send_file, jsonify
 
-app = Flask(__name__, static_folder='static')
+# Inicializacion de la web y carpeta de contenido estatico
+app = Flask(__name__, static_folder='static') 
 app.secret_key = 'random secret key'
 
 root = os.path.abspath(os.getcwd())
@@ -72,16 +73,18 @@ def upload():
 # Carga de la imagen con el metodo POST, que carga la imagen y la almacena en el servidor
 @app.route('/upload', methods=['POST'])
 def upload_image():
-    if 'image' not in request.files:
+    if 'image' not in request.files: # Si el contenido de la peticion POST esta vacio, recargar
         return render_template("deteccion.html")
     else:
         if request.files:
           f = request.files['image']
           filename = f.filename
-
-          if not filename or not allowed_file(filename):
+          
+          # Si hay un fichero erroneo o de extension no valida, recargar notificando el problema
+          if not filename or not allowed_file(filename): 
             return render_template("deteccion.html", mostrar_preview=False, mostrar_resultado=False, uploading=True, fichero_incompatible=True)
-
+          
+          # Variables de sesion que almacenan la informacion del fichero actual
           session['filename'] = filename
           target = os.path.join(root, "static/uploads")
           destino = os.path.join(target, filename)
@@ -98,86 +101,105 @@ def deteccion():
     fecha = '{:%H:%M:%S:%d-%m-%Y}'.format(datetime.datetime.now())
     fechaRegistro = '{:%d-%m-%Y}'.format(datetime.datetime.now())
 
-    confianza = request.form['slider']
+    confianza = request.form['slider'] # Valor del slider mostrado para la confianza
 
-    confianza = int(confianza)/100
+    confianza = int(confianza)/100 # Conversion 0-1
     destino = session['destino']
     filename = session['filename']
     modelo = session['modelo']
 
-    dt = Detector(modelo, confianza)
-    salida = dt.inference(destino)
-    im = cv2.imread(destino)
-    alturaImagen = im.shape[0]
-    anchuraImagen = im.shape[1]
+    # Instancia del objeto Detector junto con el modelo y deteccion con el metodo inference
+    try:
+        dt = Detector(modelo, confianza)
+        salida = dt.inference(destino)
+        im = cv2.imread(destino)
+        alturaImagen = im.shape[0]
+        anchuraImagen = im.shape[1]
 
     # Extraccion de mascaras
-    masks = dt.getOutputMask(salida)
+        masks = dt.getOutputMask(salida)
 
-    if masks == 'Sin Defectos' or masks.size == 0:
+        # Si no hay detecciones, generar el grafico igualmente pero sin alterar historico o registro
+        if masks == 'Sin Defectos' or masks.size == 0: 
+            fig = px.imshow(im)
+            fig.update_traces(hoverinfo='skip')
+            nombreGraph = "./static/uploads/graph_" + \
+                filename[:-4] + "_" + fecha + ".html"
+            fig.write_html(nombreGraph)
+
+            session['resultado'] = nombreGraph
+            session['widthHTML'] = anchuraImagen
+            session['heightHTML'] = alturaImagen
+
+            return render_template("deteccion.html",
+                            mostrar_preview=False,
+                            uploading=False,
+                            mostrar_resultado=True,
+                            conDefectos=False,
+                            result=session['resultado'],
+                            anchoGrafico=anchuraImagen,
+                            altoGrafico=alturaImagen)
+
+    except Exception as e:
+        print('-------------------------------------------------------------------------')
+        print('Excepcion al instanciar Detector, Esta presente el fichero model-x.x.pth?')
+        print('Si no es asi ejecutar descargaModelo.py en el actual directorio')
+        print('-------------------------------------------------------------------------')
+        raise
+        
+
+    # Procesado de las mascaras binarias generadas y generacion del grafico Plotly 
+    try:
         fig = px.imshow(im)
         fig.update_traces(hoverinfo='skip')
-        nombreGraph = "./static/uploads/graph_" + \
-            filename[:-4] + "_" + fecha + ".html"
-        fig.write_html(nombreGraph)
+        listTipos = list()
+        confianzas = dt.getConfidence(salida)
+        maskTotal = np.zeros_like(masks[0])
+        numeroDefecto = 0
 
-        session['resultado'] = nombreGraph
-        session['widthHTML'] = anchuraImagen
-        session['heightHTML'] = alturaImagen
+        # Se recorren las mascaras de cada error y se obtiene el area de cada una con regionprops
+        for i in range(len(masks)):
+            numeroDefecto +=1
+            mask = masks[i]
+            maskTotal = maskTotal + mask
+            labels = measure.label(mask)
+            props = measure.regionprops(labels, mask)
+            label = props[0].label
+            contour = measure.find_contours(labels == label, 0.5)[0] # Contorno del defecto binario
+            y, x = contour.T
 
-        return render_template("deteccion.html",
-                           mostrar_preview=False,
-                           uploading=False,
-                           mostrar_resultado=True,
-                           conDefectos=False,
-                           result=session['resultado'],
-                           anchoGrafico=anchuraImagen,
-                           altoGrafico=alturaImagen)
+            # Se obtiene el atributo area y se clasifica segun tamaño
+            area = getattr(props[0], "area")
+            if area >= 200:
+                tipo = ('Big')
+                listTipos.append(tipo)
+            elif area >= 100:
+                tipo = ('Medium')
+                listTipos.append(tipo)
+            else:
+                tipo = ('Small')
+                listTipos.append(tipo)
 
-
-
-    # Procesado de las mascaras binarias generadas y generacion del grafico Plotly    
-    fig = px.imshow(im)
-    fig.update_traces(hoverinfo='skip')
-    listTipos = list()
-    confianzas = dt.getConfidence(salida)
-    maskTotal = np.zeros_like(masks[0])
-    numeroDefecto = 0
-
-    for i in range(len(masks)):
-        numeroDefecto +=1
-        mask = masks[i]
-        maskTotal = maskTotal + mask
-        labels = measure.label(mask)
-        props = measure.regionprops(labels, mask)
-        label = props[0].label
-        contour = measure.find_contours(labels == label, 0.5)[0]
-        y, x = contour.T
-
-        area = getattr(props[0], "area")
-        if area >= 200:
-            tipo = ('Big')
-            listTipos.append(tipo)
-        elif area >= 100:
-            tipo = ('Medium')
-            listTipos.append(tipo)
-        else:
-            tipo = ('Small')
-            listTipos.append(tipo)
-
-        hoverinfo = ''
-        hoverinfo += f'<b>{"Área"}: {area:.2f}</b><br>'
-        hoverinfo += f'<b>{"Confianza"}: {"{:.2%}".format(confianzas[i])}</b><br>' 
-        hoverinfo += f'<b>{"Tipo"}: {tipo}</b><br>'
-        fig.add_trace(go.Scatter(
-            x=x, y=y, name=numeroDefecto,
-            mode='lines', fill='toself', showlegend=True,
-            hovertemplate=hoverinfo, hoveron='points+fills'))
-
+            # Informacion mostrada al pasar el cursor por el defecto actual
+            hoverinfo = ''
+            hoverinfo += f'<b>{"Área"}: {area:.2f}</b><br>'
+            hoverinfo += f'<b>{"Confianza"}: {"{:.2%}".format(confianzas[i])}</b><br>' 
+            hoverinfo += f'<b>{"Tipo"}: {tipo}</b><br>'
+            fig.add_trace(go.Scatter(
+                x=x, y=y, name=numeroDefecto,
+                mode='lines', fill='toself', showlegend=True,
+                hovertemplate=hoverinfo, hoveron='points+fills'))
+    except Exception as e:
+        print('-----------------------------------------------------')
+        print('Excepcion al generar mascaras, Ha habido detecciones?')
+        print('-----------------------------------------------------')
+        raise
+    
     nombreGraph = "./static/uploads/graph_" + \
         filename[:-4] + "_" + fecha + ".html"
     fig.write_html(nombreGraph)
     
+    # Como control se comprueba que los valores esten entre 0-1
     maskTotal[maskTotal > 1] = 1
     mascaraImagen = Image.fromarray(maskTotal)
 
@@ -185,9 +207,9 @@ def deteccion():
     mascaraImagen.save('./static/uploads/'+filename+'MB.png')
 
     # Generando registro en CSV
-
     numErrores = Counter(listTipos)
 
+    # Dependiendo de la existencia del CSV, se añade fila, acumula en una existente o se crea dicho fichero
     if os.path.isfile('registro.csv'):
         df = pd.read_csv('registro.csv', index_col=0).copy()
         if fechaRegistro in df.Fecha.unique():
@@ -213,7 +235,7 @@ def deteccion():
     # Generacion del grafico de lineas Plotly
     dfc = pd.read_csv('registro.csv')
     df = dfc.copy()
-    tope = df.iloc[:,2:5].sum(axis=1).max() + 5
+    tope = df.iloc[:,2:5].sum(axis=1).max() + 5 # Valor mas alto en todos los ejes y para ajustar el tamaño del grafico, margen de 5
 
     fig = go.Figure()
 
@@ -289,12 +311,14 @@ def deteccion():
                            anchoGrafico=anchuraImagen,
                            altoGrafico=alturaImagen)
 
+# Se acede al contenido de la variable sesion que apunta al grafico generado y se envia para descarga
 @app.route("/descargarDinamico")
 def descargarDinamico():
     ficheroHTML = session['resultado']
     filename = session['filename']
     return send_file(ficheroHTML, attachment_filename=filename[:-4] + ".html", as_attachment=True)
 
+# Se compone la imagen original junto con la mascara binaria y se descarga
 @app.route("/descargarComposicion")
 def descargarComposicion():
     filename = session['filename']
@@ -318,14 +342,15 @@ def descargarComposicion():
     plt.axis("tight")
     plt.gca().set_aspect('equal')
 
-    plt.subplots_adjust(wspace=0, hspace=0)
+    plt.subplots_adjust(wspace=0, hspace=0) # Se elmiinan margenes
 
-    tempFig = BytesIO()
+    tempFig = BytesIO() # Con BytesIO se almacena en memoria en lugar de tener que generar un fichero cada vez, ahorrando espacio
 
     plt.savefig(tempFig, pad_inches=0, bbox_inches='tight', format='png')
     tempFig.seek(0)
     return send_file(tempFig, mimetype="image/png", attachment_filename=filename[:-4] + "_CMP.png", as_attachment=True)
 
+# Descarga de la mascara binaria
 @app.route("/descargarMascara")
 def descargarMascara():
     mascaraBinaria = session['mascaraBinaria']
@@ -346,30 +371,33 @@ def faq():
 @app.route('/checkModelVersion', methods=['POST'])
 def checkModelVersion():
     ficheros = os.listdir()
-    ficheros = [m for m in ficheros if 'modelo' in m and '.pth' in m]
+    ficheros = [m for m in ficheros if 'modelo' in m and '.pth' in m] # Debe de tener la palabra y extension adecuados
     
     versionLocalMasReciente, versionLocalMasRecienteTxt = getMostRecentVersion(
         ficheros)
 
     if os.path.exists("modelos.json"):
-        os.remove("modelos.json") # if exist, remove it directly
+        os.remove("modelos.json") # Si existe el fichero y puede no estar actualizado, se elimina 
 
     ficheroJson = wget.download('https://raw.githubusercontent.com/fyi0000/TFG-GII-20.04/main/modelos.json')
     with open("modelos.json", "r") as fich:
         dictModelos = json.load(fich)
-            
-    versiones = [int(v['version'].replace('.','')) for v in dictModelos['modelos']]
+    
+    # Se elmina el punto entre las versiones del formato 0.3 quedando solo 3, que es inferior a 1.0 que quedaria 10
+    versiones = [int(v['version'].replace('.','')) for v in dictModelos['modelos']] 
     versionesTxt = [v['version'] for v in dictModelos['modelos']]
     
     lastVersion = max(versiones)
     lastVersionTxt = versionesTxt[versiones.index(lastVersion)]
     url = str(dictModelos['modelos'][versiones.index(lastVersion)]['url'])
 
+    # Si la version local es igual o posterior a la version remota, se notifica que esta actualizado
     if versionLocalMasReciente >= lastVersion:
         nombreFichero = 'modelo-'+lastVersionTxt+'.pth'
         session['modelo'] = nombreFichero
         return jsonify(status = 'Updated', recentVersion=lastVersionTxt, oldVersion = versionLocalMasRecienteTxt)
     
+    # Por el contrario, se actualiza el nombre del modelo a descargar para la actualizacion
     session['urlUpdate'] = url
     session['versionUpdate'] = lastVersionTxt
     nombreFichero = 'modelo-'+versionLocalMasRecienteTxt+'.pth'
@@ -400,7 +428,7 @@ def getMostRecentVersion(list):
     masReciente = 0
     masRecienteTxt = ''
     for e in list:
-        version = re.findall("[\\b\d\\b]", e)
+        version = re.findall("[\\b\d\\b]", e) # Expresion regular que detecta del nombre modelo-X.X la seccion X.X
         versionNumber = int(''.join(version))
         if versionNumber > masReciente:
             masReciente = versionNumber
