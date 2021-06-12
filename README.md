@@ -6,7 +6,7 @@ Detección de defectos en piezas metálicas usando radiografías y Deep Learning
 - Red entrenada sobre imágenes etiquetadas por los tutores del proyecto
 - Aplicación web basada en [Flask]
 - Muestra de resultados de forma interactiva gracias a [Plotly]
-- Registro de histórco de detecciones y posiblidad de descarga de resultados
+- Registro de histórico de detecciones y posibilidad de descarga de resultados
 
 ## Requisitos
 Oficialmente Detectron2 no es compatible con Windows a pesar de que algunos usuarios han conseguido compatibilizar algunas depenencias
@@ -15,8 +15,8 @@ Por ello los requisitos son:
 - Pytorch junto con TochVision
 - (Opcional) OpenCV pero que en este proyecto sí se ha utilizado para la visualización
 
-Más información acerca de la instlación en la sección oficial de la [instalación de detectron2]
-Para un despliegue más cómodo y comatible el proyecto se instala y ejecuta en una imagen [Docker]
+Más información acerca de la instalación en la sección oficial de la [instalación de detectron2]
+Para un despliegue más cómodo y compatible el proyecto se instala y ejecuta en una imagen [Docker]
 
 [Detectron2]: <https://github.com/facebookresearch/detectron2>
 [instalación de detectron2]: <https://detectron2.readthedocs.io/en/latest/tutorials/install.html>
@@ -26,7 +26,7 @@ Para un despliegue más cómodo y comatible el proyecto se instala y ejecuta en 
 
 ## Instalación de la imagen
 
-Con la aplicación de [Docker] correctamente instalada y ejecutándose, ejecutar el siguiente comando en el directorio donde se encuentre el fichero Dockerfile del repositorio.
+Con la aplicación de [Docker] correctamente instalada y ejecutándose, introducir el siguiente comando en el directorio donde se encuentre el fichero Dockerfile del repositorio.
 
 ```sh
 docker build . -t nombreimagen
