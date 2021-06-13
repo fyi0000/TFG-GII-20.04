@@ -1,0 +1,84 @@
+\apendice{Especificación de diseño}
+
+\section{Introducción}
+En esta sección se expone cómo se manipulan los datos en la aplicación, diseño procedimental y el diseño arquitectónico.
+
+\section{Diseño de datos}
+A continuación se detalla cómo se organizan los datos en la aplicación. Las imágenes que se han usado para el entrenamiento y test, cómo está estructurada la aplicación con sus ficheros y por último cómo se estructura el fichero que proporciona cierta persistencia entre las ejecuciones.
+
+\subsection{Imágenes} 
+Las imágenes utilizadas han sido segmentadas por los tutores de este proyecto. Son un total de 21 imágenes facilitadas en el repositorio. 
+Contienen diferentes piezas metálicas que presentan determinados defectos, a su vez se acompañan de 21 máscaras binarias correspondientes a cada una de las anteriores y que presentan una imagen de mismas dimensiones que la original. El contenido es una imagen en 2 colores (binaria) correspondiendo el negro a la pieza y las regiones blancas a los defectos etiquetados.
+
+Asimismo se facilitan unas imágenes con ningún o apenas defectos para la comprobación del comportamiento en estos casos.
+
+\subsection{Aplicación y clases} 
+La aplicación utiliza los ficheros y repositorio de \emph{Detectron2}, por lo que en el \emph{container} de \emph{Docker} deberá estar en el mismo directorio para su carga.
+
+El proyecto consta de por un lado 2 ficheros \emph{Python}, 5 ficheros \emph{HTML} y un último fichero de estilo \emph{CSS}.
+
+\subsubsection{Ficheros \emph{Python}}
+En esta sección no se entrará en detalle en el funcionamiento interno de \emph{Detectron2}, pero se ha de destacar que se hace uso de la clase \emph{DefaultPredictor} para instanciar el objeto que devolverá los resultados de la imagen.
+
+\subsubsection{Clase Detector}
+
+Clase muy sencilla que se inicializa con la configuración por defecto para ejecutar la detección. Para ello recibe el fichero pesos del modelo a ejecutar y un parámetro confianza que marcará el mínimo de \emph{score} o puntuación que requiere un defecto para ser considerado como tal en los resultados. 
+Generada la configuración, instancia un \emph{DefaulPrecidtor} de \emph{Detectron2} con la configuración indicada en el método \emph{inference()}, carga la imagen, ejecuta la detección de la imagen y devuelve los resultados. 
+
+Los métodos \emph{getOutputMask()} y \emph{getConfidence()} son auxiliares y devuelven por un lado la máscara binaria generada de la detección y el vector de \emph{scores} o confianza de cada defecto detectado en caso de detectarse alguno. Por defecto el umbral es de un 70\%.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{claseDetector}
+	\caption[Clase Detector]{Clase Detector}
+\end{figure}
+
+\subsubsection{Fichero app.py}
+Este fichero contiene la aplicación en \emph{Flask} como tal y es la que conecta el objeto \emph{Detector} de la clase anterior con el usuario. Gestiona los ficheros \emph{HTML} y la visualización de la aplicación web. Está dividido en \emph{@app.routes} que indican en qué sección de la aplicación se ejecuta cada método y si responde a peticiones \emph{POST}, por ejemplo.
+
+Es una clase muy extensa y a pesar de estar relativamente modularizada con los métodos, se derivó más de los mismos a esta misma desde la clase \emph{Detector} al presentar algunos problemas como la generación de la propia máscara completa en la clase que podría no detectar el mismo orden al cargarse en la aplicación.
+
+El objeto \emph{Detector} se instancia en cada ejecución. Esto se planteó como un problema ya que gracias a por ejemplo el patrón \emph{Singleton} se podría reutilizar el objeto ya instanciado y optimizar el uso. La principal razón de la estructura actual es que si se quiere cargar la configuración del usuario en el \emph{DefaultPredicor} debe de ser al instanciar de nuevo el objeto. 
+
+\subsubsection{Ficheros \emph{HTML}}
+Son la parte \emph{Frontend} de la aplicación y contienen el correspondiente código para la generación de cada una de las partes de la web.
+Se ha optado por añadir \emph{Bootsrap} para una mejor apariencia y unas secciones simples de \emph{JavaScript} con peticiones \emph{Ajax} que hacen más interactiva la web en lugar de tener que recargar cada fichero \emph{HTML} cada vez que el usuario realiza una acción.
+
+\subsubsection{Fichero \emph{CSS}}
+Contiene el estilo de los ficheros \emph{HTML} para controlar aspectos como la posición y apariencia de los mismos.
+
+\subsection{Fichero registro} 
+Fichero \emph{.csv} simple que almacena un identificador de fila, número de imágenes procesadas en un mismo día y 3 columnas que contabilizan cuantos defectos de cada tamaño se han detectado. Se va actualizando conforme avanza la ejecución.
+
+\section{Diseño procedimental}
+
+A continuación se muestra el diagrama de secuencia que detalla la iteración del usuario con la aplicación y cada una de sus secciones.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.1\textwidth]{diagramaSecuencia}
+	\caption[Diagrama de secuencia de la aplicación]{Diagrama de secuencia de la aplicación}
+\end{figure}
+
+\clearpage
+
+\section{Diseño arquitectónico}
+
+La estructura de la aplicación se divide en la parte de \emph{Backend} ó código \emph{Python} y \emph{Frontend} que es el contenido de la web y sus ficheros.
+
+\subsection{Backend}
+Los ficheros de la aplicación deben de estar inmediatamente situados en el directorio donde se sitúa la carpeta \emph{detectron2} de la cual se cargará la herramienta. Tanto el fichero \emph{app.py} como \emph{detector.py} deben de estar en el mismo directorio. El fichero \emph{registro.csv} también deberá estar en el mismo directorio o la aplicación creará uno de nuevo.
+
+\subsection{Frontend}
+Junto al fichero \emph{app.py} que representa la aplicación \emph{Flask} se encuentran los siguientes directorios:
+
+\begin{itemize}
+    \item static
+        \begin{itemize}
+            \item uploads: Directorio donde se almacenarán las imágenes resultado una vez ejecutado el modelo.
+            \item css: Contiene el fichero \emph{style.css} de estilo web 
+        \end{itemize}
+    \item templates: Contiene los ficheros \emph{HTML} que representan cada sección de la aplicación
+\end{itemize}
+
+Esta estructura se detallará en el siguiente apartado, mostrando la estructura de directorios.

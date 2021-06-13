@@ -1,0 +1,27 @@
+\capitulo{7}{Conclusiones y Líneas de trabajo futuras}
+
+\section{Conclusión}
+El principal objetivo del proyecto se ha cumplido correctamente. Partiendo de un número de imágenes segmentadas por los propios tutores se ha conseguido entrenar un modelo que realmente funcione y los detecte en su mayor parte. 
+
+La principal limitación era el tamaño de este debido al elevado esfuerzo que representa la segmentación manual de imágenes de este tipo. Se ha buscado balancear el conjunto de entrenamiento de tal manera que la detección cubriese el mayor tipo de defectos posibles, a pesar de que en un determinado grupo de imágenes defectos muy pequeños no siempre se detectan como se esperaba. 
+
+Si bien no siempre los resultados son negativos ya que a veces se tiene a agrupar dichos defectos en lugar de una detección individualizada, alterando las métricas empleadas. En relación a trabajos anteriores y en concreto al realizado por \emph{Noelia Ubierna Fernández} realizado el año pasado, se observó que el conjunto utilizado presentaba las máscaras de forma diferente, presentando una imagen por defecto que luego se fusionaba para generar la máscara binaria final.
+
+Se procedió a la separación de las máscaras propias, conteniendo cada una un defecto por separado y comprobando finalmente que los resultados eran los mismos que al utilizar una máscara etiquetada de forma única que contuviese todos los defectos.
+
+En cuanto a las herramientas, ha sido muy interesante profundizar en el uso del lenguaje \emph{Python} de una forma más extendida, aplicándose también para el despliegue de la herramienta en formato Web. 
+
+La apariencia y composición de la Web no es especialmente compleja, pero si representa una buena introducción tanto al desarrollo web de cara al usuario por un lado, y al servidor por otro. También ha sido muy útil la puesta en práctica de la herramienta \emph{Docker}, que hace posible programar, probar y ejecutar herramientas en cualquier sistema sin preocuparse de incompatibilidades posteriores.
+
+
+\section{Líneas de trabajo futuras}
+
+Ideas para la mejora del proyecto en el futuro:
+
+\begin{enumerate}
+    \item \textbf{Ampliar el conjunto de imágenes:} Si bien como ya se ha comentado es complicado el proceso de segmentación de imágenes, podría representar un punto de inflexión en el rendimiento del modelo en un futuro
+    \item \textbf{Explorar diferentes algoritmos:} \emph{Detectron2} es una herramienta muy potente que además permite el uso de diferentes algoritmos. En este caso se ha usado \emph{Faster-RCNN} por el buen desempeño que presenta en otras labores de detección en imágenes, pero podría darse el caso de que otro de los algoritmos diferentes funcionase mejor.
+    \item \textbf{Revisión del despliegue:} Actualmente y a pesar de que está planificado, \emph{Detectron2} no es oficialmente compatible con \emph{Windows}, si bien hay usuarios que han intentado compatibilizar dependencias, la instalación no siempre es segura. Por ello puede ser que en un futuro la instalación y uso de la herramienta cambiase y habría de tenerse en cuenta.
+    \item \textbf{Mejoras en la Aplicación Web:} \emph{Flask} es una gran herramienta que permite el desarrollo de aplicaciones web en \emph{Python} pero de una forma rápida, por ello presenta algunas limitaciones y no es tan polivalente como otros lenguajes y \emph{frameworks} que podrían hacer de la aplicación web una herramienta más avanzada.
+    
+\end{enumerate}

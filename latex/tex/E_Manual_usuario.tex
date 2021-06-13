@@ -1,0 +1,442 @@
+\apendice{Documentación de usuario}
+
+\section{Introducción}
+A continuación se explica cómo es el proceso de instalación completo del proyecto, desde la instalación de \emph{Docker} hasta el uso del fichero \emph{Dockerfile} que se recuerda está en el repositorio del proyecto\footnote{Repositorio: https://github.com/fyi0000/TFG-GII-20.04}.
+
+\section{Requisitos de usuarios}
+Es imprescindible que, al menos para la instalación y actualización del modelo se disponga de \textbf{conexión a Internet.}
+
+Además se debe contemplar que tanto \emph{jQuery} como \emph{Bootsrap} se utilizan mediante un \emph{CDN} (\emph{Content Delivery Network}), que evita la descarga de los ficheros para que ambos componentes funcionen. Por ello de no haber conexión a internet determinadas peticiones no podrían resolverse y la aplicación perdería funcionalidades.
+
+Como ya se ha expuesto anteriormente, oficialmente \emph{Detectron2} no es compatible con Windows, por lo que, y según su web oficial\cite{detecron2:instalacion} los requisitos son:
+
+\begin{itemize}
+    \item \emph{Linux} o \emph{MacOs} con una versión de \emph{Python} 3.6 o superior
+    \item \emph{Pytorch} y \emph{torchvision} versión 1.6 o superior
+    \item \emph{OpenCV} es opcional pero se recomienda para la visualización
+\end{itemize}
+
+Además, por la forma como está elaborado el proyecto, se requiere tener instalado \emph{Docker}. La instalación que se detalla no es para nada compleja pero es para \emph{Windows} y puede variar en el entorno Linux o similares aunque los comandos de uso son los mismos.
+
+
+Una vez generada la imagen ocupa un total de unos 7.5-8GB de espacio en disco. Se han hecho pruebas con la imagen sobre la que se genera la imagen, siendo esta de \emph{Nvidia} y la indicada por \emph{Detectron2}. A pesar de probar con imágenes como \emph{Debian}, instalar las dependencias no es suficiente y puede generar errores. Por ello no ha sido posible minimizar más el espacio.
+
+\section{Instalación} \label{instalaciondeusuario}
+
+\begin{enumerate}
+    \item El primer paso es acceder a la web de \emph{Docker} y en concreto a la sección de \emph{Windows}: \\
+    
+    \begin{center}\url{https://docs.docker.com/docker-for-windows/install/}\end{center}
+    
+    La instalación es prácticamente automática y solo hay que esperar a que se complete.
+    
+    \item Una vez instalado, se aconseja utilizar \emph{WSL 2 based engine} que es una alternativa a \emph{Hyper V} para la virtualización.
+    
+    \textbf{Nota importante:} En los equipos que se han utilizado ha sido además necesario la instalación de una actualización del kernel de \emph{Linux} y posterior reinicio. Puede no ser el caso pero si \emph{Docker} no inicia correctamente, se adjunta el instalador de la última versión en el soporte digital y si no acceder a  a: \\
+    
+    \url{https://docs.docker.com/docker-for-windows/wsl/}\\
+    \begin{center}
+    ó\end{center}
+    \url{https://docs.microsoft.com/es-es/windows/wsl/install-win10#step-4---download-the-linux-kernel-update-package}
+    
+    \clearpage
+    
+    Se ha de tener en cuenta que los comandos que se detallan a continuación y en general todas las funciones de \emph{Docker} no funcionarán salvo que se esté ejecutando el \emph{daemon}. Por ello confirmar que no hay una actualización en curso y que está funcionando correctamente si se observa el siguiente icono estático en la barra de tareas
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.1\textwidth]{iconodocker}
+	\caption[Icono de ejecución Docker]{Icono de ejecución Docker}
+    \end{figure}
+    
+    \item Una vez instalado y teniendo \emph{Docker} en ejecución, se debería de clonar el proyecto desde el repositorio mediante un comando:\\
+    
+    \begin{center}\emph{git clone https://github.com/fyi0000/TFG-GII-20.04}\end{center}
+    
+
+    O bien desde las unidades digitales facilitadas que contienen los mismos ficheros más el modelo. Al final se tendría que observar un directorio similar al siguiente:
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.5\textwidth]{manual1}
+	\caption[Directorio tras clonación o copia]{Directorio tras clonación o copia}
+    \end{figure}
+    
+    \clearpage
+        
+    \item A partir de este punto se recomienda utilizar el \emph{PowerShell} para llegar al directorio donde se encuentra el fichero \emph{Dockerfile} sin extensión, aunque también es posible utilizar la Consola normal.
+    
+    Una forma rápida es pulsar \emph{Shift Izquierdo + Botón derecho} y se mostrará esta opción:
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.6\textwidth]{manual2}
+	\caption[Opción de apertura directa PowerShell]{Opción de apertura directa PowerShell}
+    \end{figure}
+    
+    Que como se puede comprobar nos permite abrir la ventana en el propio directorio sin necesidad de utilizar \emph{cd's}.
+    
+    \item\label{paso5} A continuación ejecutaremos el comando \emph{Docker} que a partir del \emph{Dockerfile} facilitado, construye la imagen a partir de la cual se pueden generar los contenedores.
+    El comando es: \\
+    
+    \begin{center}\emph{docker build . -t nombreimagen}\end{center}
+    
+    El punto a continuación de \emph{build} indica que el fichero está en el directorio actual, aunque como se puede suponer es posible ejecutar la consola en cualquier directorio y \emph{apuntar} al fichero \emph{Dockerfile} pasando su ruta como este primer directorio.
+    A continuación de \emph{-t} o \emph{tag} se especifica un nombre de la imagen en minúscula.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual3}
+	\caption[Comando build de imagen]{Comando build de imagen}
+    \end{figure}
+    
+    \item Debido al tamaño de la imagen y que además se instalan todas las dependencias contenidas en el fichero \emph{requirements.txt}, el proceso puede superar los 10 minutos hasta que se complete la creación de la imagen.
+    
+    Aunque la traza del proceso simplemente indica lo que está haciendo, es importante por ejemplo, y si es posible, asegurarse de que el comando ``RUN python descargaModelo.py'' se demora un tiempo ya que nos indica si ha podido haber algún problema con el modelo alojado en \emph{Google Drive}.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual4}
+	\caption[Descarga de modelo]{Descarga de modelo}
+    \end{figure}
+    
+ 
+    \item Terminado el proceso, abrimos \emph{Docker} y nos vamos a la sección \emph{images} en la parte superior izquierda donde deberíamos ver una imagen de entorno a 8GB y con el nombre o \emph{tag} que le hemos dado en el paso 5 de este apartado.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.0\textwidth]{manual5}
+	\caption[Sección Images en Docker]{Sección Images en Docker}
+    \end{figure}
+    
+    \item Confirmado que la imagen se ha creado correctamente, pulsamos sobre el botón \emph{RUN} que aparece al colocar el cursor sobre la imagen.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.2\textwidth]{manualRunImage}
+	\caption[Creación de contenedor desde imagen]{Creación de contenedor desde imagen}
+    \end{figure}
+    
+    \clearpage
+    
+    Ahora se nos abrirá una pequeña ventana de creación directa. \textbf{No pulsamos Run} y desplegamos las \emph{Optional Settings}. Ahora asignamos un nombre a nuestra elección al contenedor y en \emph{Local Port} o Puerto Local escribimos \textbf{5000}. Hacemos esto ya que por defecto es el puerto expuesto en \emph{Flask}.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.0\textwidth]{manual6}
+	\caption[Configuración del contenedor]{Configuración del contenedor}
+    \end{figure}
+    
+    \item Ahora nos vamos a la sección \emph{Containers/Apps} de \emph{Docker} y confirmamos que está el contenedor que acabamos de crear ejecutándose.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.1\textwidth]{manual7}
+	\caption[Contenedor correctamente creado]{Contenedor correctamente creado}
+    \end{figure}
+    
+    \clearpage
+    
+    Para comprobar que todo ha funcionado:
+    
+    \begin{itemize}
+        \item El contenedor se mantiene en ejecución
+        \item En texto azul y a la derecha del nombre del contenedor está nuestra imagen inicialmente creada
+        \item El puerto que se indica debajo del nombre es efectivamente el 5000
+    \end{itemize}
+    
+    A la derecha del nombre nos aparecen diferentes botones, los que se usarán son:
+    
+    \begin{itemize}
+        \item 2º para lanzar la línea de comandos del contenedor
+        \item 3º para iniciar o detener el contenedor
+        \item 5º para borrar el contenedor, se debe tener en cuenta que no se puede borrar una imagen si hay contenedores dependientes existentes
+    \end{itemize}  
+    
+    Y por último podemos lanzar la línea de comandos, con el 2º botón anteriormente mencionado e iniciando el contenedor si no lo estaba, y hacer un \emph{ls} para comprobar que todo está correctamente estructurado.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.1\textwidth]{manual8}
+	\caption[Directorio correcto]{Directorio correcto}
+    \end{figure}
+    
+    Ficheros que deben estar presentes:
+    
+    \begin{itemize}
+        \item \textbf{app.py}: Es la aplicación y debe estar presente en este punto.
+        \item \textbf{detector.py}
+        \item\textbf{descargaModelo.py}: Es el script auxiliar que descarga el modelo inicialmente.
+        \item\textbf{detectron2}: Directorio de \emph{Detectron2} necesario para la ejecución de la aplicación. Nos indica que se ha clonado correctamente e instalado.
+        \item\textbf{modelo-0.1.pth}: Modelo inicial que debe estar presente siempre.
+        \item\textbf{static y templates}: Directorios que contienen la estructura web luego han de estar localizados aquí.
+        \item\textbf{registro.csv}: Fichero que inicializa el histórico.
+        \item\textbf{static/uploads/graficoHistorico.html}: Histórico inicial
+    \end{itemize}  
+    
+    De no estar estos ficheros o estar en otra disposición puede dar lugar a errores.
+    
+\end{enumerate}
+
+Como punto final es posible que se quiera limpiar la \emph{caché} del \emph{builder} que aunque \emph{Docker} la limpia, se puede hacer de forma inmediata con: \\
+\begin{center}\emph{docker builder prune}\end{center}
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.1\textwidth]{manual30}
+	\caption[Limpieza de la cache de instalación]{Limpieza de la cache de instalación}
+    \end{figure}
+    
+Confirmando que realmente se desea limpiar la caché de toda la instalación de esta sección.
+
+Hasta este punto se considera la instalación de la herramienta, el uso y manual correspondiente se detallará en el apartado que viene a continuación.
+
+\clearpage
+
+\section{Manual del usuario}
+En esta sección se detalla el uso como usuario de la aplicación en cada una de sus partes.
+
+\subsubsection{Ejecución y acceso}
+Suponiendo que el proceso de la sección anterior haya funcionado correctamente, ya se está en disposición de iniciar la aplicación.
+
+Primero se iniciará la aplicación \emph{Docker} se encontraba ya en ejecución y de igual manera el contenedor anteriormente creado.
+
+Ahora se accede mediante el 2º botón del contenedor a la línea de comandos.
+Para iniciar la aplicación y asegurase de que la ejecución tiene los permisos, se hará con la palabra \emph{sudo}, ya que se ha probado a ajustar permisos con \emph{chmod} en el propio \emph{Dockerfile} pero han surgido problemas de igual manera.
+
+\begin{center}\emph{sudo python app.py}\end{center}
+
+\textbf{Nota:} Es posible configurar el contenedor para el lanzamiento inmediato de nuestra aplicación, para ello basta con añadir al \emph{Dockerfile} la línea
+
+\begin{center}\emph{\#CMD [``python'', ``app.py'']}\end{center}
+
+que se encuentra comentada en el \emph{Dockerfile} facilitado. El problema que presenta es que la ejecución no siempre es como \emph{sudo} y de haber un fallo, el contenedor se detendrá y tendremos que reconstruir la imagen de nuevo desde el \emph{Dockerfile}. Por ello se ha optado por dejar la ejecución de forma manual.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.1\textwidth]{manual9}
+	\caption[Lanzamiento de la aplicación]{Lanzamiento de la aplicación}
+    \end{figure}
+    
+\emph{Flask} nos indica ahora que es un \emph{microframework} y por lo tanto el mensaje que no recomienda su uso en producción es normal, dado que no se recomienda someterlo a múltiples peticiones. Para este proyecto su rendimiento es perfectamente suficiente luego no hay problema.
+
+En la parte inferior nos indica la dirección donde se ejecuta nuestra aplicación web seguido del puerto que se expuso cuando se configuró el contenedor. Accedemos desde el navegador escribiendo la dirección o bien:
+
+\begin{center}\emph{http://localhost:5000/}\end{center}
+
+Una vez accedemos se nos muestra el inicio con una pequeña sección de información
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.1\textwidth]{manual10}
+	\caption[Página de inicio]{Página de inicio}
+    \end{figure}
+
+A su vez en la parte superior izquierda tenemos una \emph{navbar} con la que podemos navegar de forma rápida por todas las secciones
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual11}
+	\caption[Navbar superior]{Navbar superior}
+    \end{figure}
+
+\clearpage
+
+\subsubsection{Detección}
+Si queremos empezar con la detección, podemos acceder desde el botón \emph{Detectar} que se nos muestra el inicio o desde la correspondiente opción de la \emph{navbar}.
+
+En esta sección se nos muestra un \emph{input} para ficheros que no permite continuar a no ser que se haya facilitado un fichero.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual13}
+	\caption[Fichero requerido]{Fichero requerido}
+    \end{figure}
+    
+A su vez las restricciones de imagen debido a los formatos que se ha comprobado que funcionan en \emph{Detectron2} son \emph{PNG, JPG y JPEG}, rechazando cualquier otro fichero.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual14}
+	\caption[Formatos requeridos]{Formatos requeridos}
+    \end{figure}
+    
+\clearpage
+
+Si la imagen que se facilita es correcta se obtiene una previsualización de la misma y un \emph{slider} para marcar la confianza o seguridad mínima que debe de tener un defecto detectado para ser mostrado en los resultados.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual15}
+	\caption[Previsualización de imagen a detectar]{Previsualización de imagen a detectar}
+    \end{figure}
+
+Si todo es correcto se pulsa \emph{Aceptar} y comienza el proceso mostrando un \emph{loader}.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.3\textwidth]{manual16}
+	\caption[Loader de detección]{Loader de detección}
+    \end{figure}
+
+Una vez finaliza el proceso, se muestra un gráfico \emph{Plotly} mostrando los resultados y detecciones.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.0\textwidth]{manual17}
+	\caption[Muestra de resultados]{Muestra de resultados}
+    \end{figure}
+
+Si se coloca el cursor sobre algún defecto, se obtiene además información sobre el mismo como el área que ocupa, tamaño que se le otorga según el área, confianza de la detección y en el borde gris el identificador del defecto.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.4\textwidth]{manualHoverInfo}
+	\caption[Muestra de métricas]{Muestra de métricas}
+    \end{figure}
+
+\clearpage
+
+El gráfico \emph{Plotly} tiene multitud de opciones y al colocar el cursor sobre él apareciendo diferentes controles
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.6\textwidth]{manual18}
+	\caption[Controles Plotly]{Controles Plotly}
+    \end{figure}
+
+
+Aunque son descriptivos por si mismos, algunas opciones son:
+
+\begin{itemize}
+    \item Descargar como .png la perspectiva actual
+    \item Aumentar el zoom o seleccionar herramienta mover
+    \item Manipular la leyenda y restaurar el zoom inicial
+    \item Enlace a la web de \emph{Plotly}
+\end{itemize}
+
+Además es posible hacer zoom arrastrando y soltando el cursor sobre una zona específica
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual19}
+	\caption[Función de zoom]{Función de zoom}
+    \end{figure}
+
+\clearpage
+
+Pudiendo ahora aplicar otra herramienta interesante, si se hace click sobre la leyenda y en concreto el identificador de un defecto que queremos ocultar temporalmente.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual20}
+	\caption[Ocultando detecciones]{Ocultando detecciones}
+    \end{figure}
+
+Basta con volverá hacer click en dicha leyenda para que se vuelva a mostrar.
+
+A su vez se muestran opciones de descarga de resultados, Máscara binaria por un lado y por otro tanto el propio gráfico \emph{Plotly} que puede abrirse independientemente en el navegador como una composición imagen original - máscara binaria.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.6\textwidth]{manual22}
+	\caption[Botones de descarga]{Botones de descarga}
+    \end{figure}
+
+\clearpage
+
+La máscara binaria:
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.6\textwidth]{manual21}
+	\caption[Máscara binaria descargada]{Máscara binaria descargada}
+    \end{figure}
+
+Composición:
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.4\textwidth]{manual23}
+	\caption[Composición descargada]{Composición descargada}
+    \end{figure}
+    
+\clearpage
+
+En caso de no haber detecciones se permitirá igualmente la observación con \emph{Plotly} y la descarga del gráfico interactivo, indicando al lado del botón que los resultados están vacíos y por lo tanto no se han detectado defectos.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.2\textwidth]{manual28}
+	\caption[Ejecución sin detecciones]{Ejecución sin detecciones}
+    \end{figure}
+
+\clearpage
+
+\subsubsection{Histórico}
+
+Además si se accede a la sección Histórico se mostrará otro gráfico \emph{Plotly} que muestra la sucesión de detecciones por fecha, dividiendo por el tamaño el número de defectos que se han detectado ese día y mostrando además el número de imágenes procesadas ese día para tener mayor perspectiva.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.1\textwidth]{manual24}
+	\caption[Gráfico de histórico]{Gráfico de histórico}
+    \end{figure}
+
+Igualmente si se pasa el cursor por el gráfico además de las mismas opciones del gráfico resultados, se muestran los valores de la fecha sobre la que se sitúa el cursor.
+
+\clearpage
+
+\subsubsection{Actualización de modelo}
+
+Debido a que en un hipotético caso podrían incorporarse más imágenes al conjunto, sería posible reentrenar la red y obtener un mayor rendimiento. Por ello la aplicación comprueba cada vez que se lanza, el fichero \emph{modelos.json} del repositorio donde se podría colocar en forma de diccionario, un nuevo modelo, indicando la versión y enlace de \emph{Google Drive} para la detección y descarga.
+
+Por defecto y para demostrar el funcionamiento, el \emph{Dockerfile} descarga la versión 0.1 estando disponible la 0.2, por lo que se mostrará este mensaje.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{manual12}
+	\caption[Actualización del modelo]{Actualización del modelo}
+    \end{figure}
+
+Si se pulsa el botón \emph{Actualizar Modelo} se iniciará la actualización y se mostrará un pequeño \emph{loader}
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.2\textwidth]{manual25}
+	\caption[Loader de actualización]{Loader de actualización}
+    \end{figure}
+
+Si todo funciona aparecerá el siguiente mensaje indicando a qué versión se ha actualizado, si no se indicará que ha habido un problema en la actualización.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.5\textwidth]{manual26}
+	\caption[Actualización correcta]{Actualización correcta}
+    \end{figure}
+
+\clearpage
+
+Y en sucesivas ocasiones que se lance la aplicación, se mostrará un mensaje similar asegurando que la comprobación se ha realizado y el modelo local es el último disponible.
+
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.5\textwidth]{manual27}
+	\caption[Modelo local actualizado]{Modelo local actualizado}
+    \end{figure}
+
+Debido a que la presencia de al menos un modelo es vital para que la aplicación cumpla su función, no se elimina el modelo anterior, lo que conviene tener presente a pesar de que no ocupan demasiado espacio por sí mismos.
+
+\subsection{En caso de no poder descargar el modelo inicial}
+En los soportes digitales se facilita el modelo inicial además del script para su descarga. Si por algún motivo no se pudiese descargar y hacer funcionar la aplicación, los pasos serían los siguientes:
+
+\begin{enumerate}
+    \item Iniciar el contenedor creado como se ha detallado anteriormente
+    \item Mediante el comando \emph{pwd} es posible confirmar que la ruta es \\ \begin{center}
+    \emph{home/appuser/detectron2\_repo}\end{center} si no es así navegar con \emph{cd} hasta encontrar \emph{app.py}.
+    \item A continuación y en el directorio del anfitrión donde se encuentre el fichero \emph{modelo-0.1.pth}, abrir o navegar mediante una consola común o \emph{PowerShell} y ejecutar:
+    \begin{center}\emph{docker cp modelo-0.1.pth nombreContenedor:home/appuser/detectron2\_repo}\end{center}
+    Donde \emph{nombreContendor} es el nombre que se le haya dado al contenedor creado.
+\end{enumerate}
+
+Prestar atención a los espacios en las rutas ya que podría ser necesario el uso de comillas en el argumento del comando

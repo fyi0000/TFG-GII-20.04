@@ -1,0 +1,25 @@
+\capitulo{6}{Trabajos relacionados}
+
+\subsection{Research on Approaches for Computer Aided Detection of Casting Defects in X-ray Images with Feature Engineering and Machine Learning}
+
+Autores: \emph{Du Wangzhe, Hongyao Shen, Fu Jianzhong, Ge Zhang, Quan He}
+
+Trabajo de la Universidad de Zhejiang, año 2019 donde se contempla a nivel general las técnicas de CNN para la detección en imágenes y defectos de piezas metálicas. En el trabajo se contemplo tanto \emph{Fast R-CNN} como \emph{Faster R-CNN} para el funcionamiento, evaluando la \emph{Precision} y \emph{Recall} de ambos en un conjunto de 2236 imágenes.
+
+Conforme se fueron observando los resultados, se observó que tanto el recorte de la propia imagen, posición de la pieza, brillo de la misma y el fondo, alteraban notablemente los resultados de las detecciones. Proponen además la utilización de histogramas para el realce de los defectos presentes en la imagen, aunque al trabajar con escala de grises, puede llevar a errores si hay presencia de partes similares a los defectos.
+
+Concluyen que han tenido mejores resultados con \emph{Fast R-CNN} que con \emph{Faster R-CNN}, junto con una manipulación de las imágenes que incluía giros de 45º y recortes aleatorios de las mismas en distintas regiones.
+\cite{articulos:approaches}
+
+\clearpage
+
+\subsection{Real-Time Tiny Part Defect Detection System in Manufacturing Using Deep Learning}
+
+Autores: \emph{Jing Yang, Shaobo Li, Zheng Wang, Guanci Yang}
+
+En este proyecto\cite{articulos:tiny-parts} del año 2019 tenía como objetivo la aplicación del \emph{Deep Learning} a la detección en tiempo real de defectos en agujas. En este caso se utilizó una red \emph{SSD} \cite{Liu_2016} basada en la regresión de \emph{Faster R-CNN}. 
+
+El funcionamiento era algo más complejo ya que se diseñó el sistema con una cámara de entrada de vídeo, una \emph{Raspberry Pi 3} que ejecutaba el modelo y una pantalla de seguimiento en vivo. La cámara tomaba como entrada un \emph{conveyor belt} o cinta transportadora que se movía a en torno a 7 metros por segundo. Se observaban las agujas recién fabricadas y se clasificaba cada una con los 4 tipos de defectos más comunes o por el contrario como una aguja correctamente fabricada.
+
+Se compararon resultados según algoritmos utilizados y el tipo de defecto que podían presentar las agujas y se llegó a la conclusión de que la combinación de \emph{Faster R-CNN} y \emph{SSD} mejoraba notablemente los resultados. 
+A pesar de todo había un tipo de defecto que presentaba una peor detección en todos los algoritmos, con un porcentaje de acierto notablemente bajo. Finalmente se apuntó a la búsqueda de una solución futura ya que no se dió con una solución.

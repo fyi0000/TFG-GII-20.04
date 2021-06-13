@@ -1,0 +1,144 @@
+\apendice{Especificación de Requisitos}
+
+\section{Introducción}
+A continuación se exponen los objetivos generales del proyecto y del producto final así como los diferentes requisitos y casos de uso.
+
+\section{Objetivos generales}
+
+\begin{itemize}
+    \item Obtención de un modelo que se comporte correctamente con las imágenes propias
+    \item Integración en una aplicación web que permita la correcta ejecución del modelo de forma sencilla para el usuario
+    \item Mostrar los resultados de una forma amigable y permitir la conservación de los mismos
+\end{itemize}
+
+\section{Catalogo de requisitos}
+Se detallan ahora los requisitos funcionales de la aplicación.
+
+\begin{itemize}
+    \item \textbf{RF 1} Permitir la ejecución del modelo sobre una radiografía mostrando las detecciones.
+    \begin{itemize}
+	    \item \textbf{RF 1.1} Poder subir la imagen objetivo del usuario a la aplicación.
+	    \item \textbf{RF 1.2} Mostrar previsualización de la imagen.
+	    \item \textbf{RF 1.3} Muestra de los resultados de forma interactiva.
+	    \item \textbf{RF 1.4} Personalizar el valor límite o confianza de los defectos.
+	\end{itemize}
+
+	\item \textbf{RF 2} Permitir la descarga de resultados.
+    \begin{itemize}
+	    \item \textbf{RF 2.1} Descargar la máscara binaria generada.
+	    \item \textbf{RF 2.2} Descargar el resultado interactivo de la figura \emph{Plotly}.
+	    \item \textbf{RF 2.3} Descargar los resultados en forma de composición.
+	\end{itemize}
+	
+	\item \textbf{RF 3} Mostrar información de las detecciones.
+    \begin{itemize}
+	    \item \textbf{RF 3.1} Clasificar los defectos por tamaño y etiquetarlos en la figura.
+	    \item \textbf{RF 3.2} Mostrar el área del defecto.
+	\end{itemize}
+	
+	\item \textbf{RF 4} Generar un histórico de detecciones.
+    \begin{itemize}
+	    \item \textbf{RF 4.1} Registrar en un fichero las detecciones por fecha y tamaño de defectos.
+	    \item \textbf{RF 4.2} Generar un gráfico de áreas a partir del histórico.
+	\end{itemize}
+
+\end{itemize}
+
+\clearpage
+
+\section{Especificación de requisitos}
+
+\subsection{Diagrama de casos de uso}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.0\textwidth]{casosdeUso}
+	\caption[Diagrama de casos de uso]{Diagrama de casos de uso}
+\end{figure}
+
+\tablaSmallSinColores{C0: Cargar imagen a la aplicación}{p{3cm} p{.75cm} p{9.5cm}}{casodeUso0}{
+  \multicolumn{3}{l}{C0: Cargar imagen a la aplicación.} \\
+ }
+ {
+  Descripción                       &  \multicolumn{2}{p{10.25cm}}{Permite cargar una imagen a la aplicación para su uso.} \\\hline
+  \multirow{2}{3.5cm}{Requisitos}   &   \multicolumn{2}{p{10.25cm}}{RF 1.1} \\\cline{2-3}
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 1.2}\\\hline
+  Precondiciones                    &   \multicolumn{2}{p{10.25cm}}{Aplicación inicializada}   \\\hline
+  \multirow{2}{3.5cm}{Secuencia normal}  & Paso & Acción \\\cline{2-3}
+                                         & 1    & Se selecciona una imagen.
+  \\\cline{2-3}
+                                         & 2    & Se pulsa el botón subir y se muestra la profesionalización.
+  \\\cline{2-3}
+                                         & 3    & La imagen se guarda en el directorio de la aplicación.
+                                         \\\hline
+  Postcondiciones                        & \multicolumn{2}{p{10.25cm}}{La imagen se guarda en el directorio correspondiente y se muestra la previsualización.} \\\hline
+  Excepciones                        & \multicolumn{2}{p{10.25cm}}{No se ha seleccionado ningún fichero. El formato de fichero no es ni .png, .jpg o .jpeg}\\
+}
+
+\clearpage
+  
+\tablaSmallSinColores{C1: Ejecutar detección}{p{3cm} p{.75cm} p{9.5cm}}{casodeUso1}{
+  \multicolumn{3}{l}{C1: Ejecutar detección.} \\
+ }
+ {
+  Descripción                       &  \multicolumn{2}{p{10.25cm}}{Se ejecuta el modelo sobre la imagen y se muestran los resultados.} \\\hline
+  \multirow{2}{3.5cm}{Requisitos}   &   \multicolumn{2}{p{10.25cm}}{RF 1} \\\cline{2-3}
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 1.4}\\\hline
+                                    
+  Precondiciones                    &   \multicolumn{2}{p{10.25cm}}{Imagen correctamente cargada en la aplicación.}   \\\hline
+  \multirow{2}{3.5cm}{Secuencia normal}  & Paso & Acción \\\cline{2-3}
+                                         & 1    & Se selecciona en el \emph{slider} la confianza deseada para la detección.
+  \\\cline{2-3}
+                                         & 2    & Se pulsa el botón Aceptar y se procede a la detección.
+\\\cline{2-3}
+                                         & 3    & Tras la carga, se muestran los resultados en forma de gráfico \emph{Plotly}.
+                                         \\\hline
+  Postcondiciones                        & \multicolumn{2}{p{10.25cm}}{Se genera el gráfico \emph{Plotly y se guarda correctamente.}}\\\hline
+  Excepciones                        & \multicolumn{2}{p{10.25cm}}{Hay un fallo en la carga de la imagen.}\\
+  }
+  
+  \clearpage
+  
+ \tablaSmallSinColores{C2: Obtener información de los defectos}{p{3cm} p{.75cm} p{9.5cm}}{casodeUso2}{
+  \multicolumn{3}{l}{C2: Obtener información de los defectos.} \\
+ }
+ {
+  Descripción                       &  \multicolumn{2}{p{10.25cm}}{Gracias al gráfico \emph{Plotly} el usuario puede colocar el cursor sobre los diferentes defectos y observar la información correspondiente. También puede pulsar sobre la leyenda para mostrar/ocultar cada uno.} \\\hline
+   \multirow{2}{3.5cm}{Requisitos}   &   \multicolumn{2}{p{10.25cm}}{RF 1.3} \\\cline{2-3}
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 2}\\\hline
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 2.1}\\\hline
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 2.2}\\\hline
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 2.3}\\\hline
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 3.1}\\\hline
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 3.2}\\\hline
+  Precondiciones                    &   \multicolumn{2}{p{10.25cm}}{Detección ejecutada.}   \\\hline
+  \multirow{2}{3.5cm}{Secuencia normal}  & Paso & Acción \\\cline{2-3}
+                                         & 1    & Mostrando el gráfico, colocar el cursor sobre cada defecto coloreado.
+  \\\cline{2-3}
+                                         & 2    & Se muestra el ID del defecto, Área y tipo clasificado por tamaño, ya sea Grande, Pequeño o Mediano.
+  \\\cline{2-3}
+                                         & 3    & Se puede pulsar y mantener pulsado para hacer zoom sobre la imagen o defectos.
+  \\\cline{2-3}
+                                         & 4    & Se muestran 3 opciones de descarga de resultados: Gráfico interactivo, máscara binaria ó composición original-máscara.
+                                         \\\hline
+  Postcondiciones                        & \multicolumn{2}{p{10.25cm}}{El usuario ha podido comprobar la información de cada defecto detectado.}\\\hline
+  Excepciones                        & \multicolumn{2}{p{10.25cm}}{No hay detecciones y no se muestran defectos pero si el gráfico \emph{Plotly}}\\
+  }
+  
+\tablaSmallSinColores{C4: Consultar el histórico}{p{3cm} p{.75cm} p{9.5cm}}{casodeUso4}{
+  \multicolumn{3}{l}{C4: Consultar el histórico.} \\
+ }
+ {
+  Descripción                       &  \multicolumn{2}{p{10.25cm}}{Permite cargar una imagen a la aplicación para su uso.} \\\hline
+  \multirow{2}{3.5cm}{Requisitos}   &   \multicolumn{2}{p{10.25cm}}{RF 4} \\\cline{2-3}
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 4.1} \\\cline{2-3}
+                                    &   \multicolumn{2}{p{10.25cm}}{RF 4.2}\\\hline
+  Precondiciones                    &   \multicolumn{2}{p{10.25cm}}{Aplicación inicializada}   \\\hline
+  \multirow{2}{3.5cm}{Secuencia normal}  & Paso & Acción \\\cline{2-3}
+                                         & 1    & En la \emph{Navbar} superior, se selecciona la opción Histórico.
+  \\\cline{2-3}
+                                         & 2    & Se muestra el gráfico \emph{Plotly} y es posible hacer zoom, alejar la vista y colocar el cursor sobre los puntos para obtener la información de cada día. Defectos de un determinado tamaño detectados ese día y número total de imágenes procesadas.
+                                         \\\hline
+  Postcondiciones                        & \multicolumn{2}{p{10.25cm}}{El usuario comprueba como es el histórico de detecciones en la aplicación.} \\\hline
+  Excepciones                        & \multicolumn{2}{p{10.25cm}}{El fichero histórico está ausente o defectuoso.}\\
+}

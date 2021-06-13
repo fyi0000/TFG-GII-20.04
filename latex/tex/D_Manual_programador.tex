@@ -1,0 +1,265 @@
+\apendice{Documentación técnica de programación}
+
+\section{Introducción}
+En este apartado se expone la estructura del proyecto, manual para el programador, una guía de instalación y correcta ejecución del proyecto, además de pruebas realizadas sobre su funcionamiento.
+
+\section{Estructura de directorios}
+La estructura se contempla una vez ejecutado el fichero \emph{Dockerfile} que construye la imagen que contiene, por un lado el entorno original facilitado por \emph{Detectron2} en su \emph{Dockerfile} oficial que se ha modificado para este proyecto y además el repositorio de \emph{Github} descargado y extraído.
+
+
+\begin{figure}[h]
+	\dirtree{%
+		.1 /.
+		.2 detectron2.
+		.2 configs.
+		.2 imagenes
+		.2 setup.py.
+		.2 proyecto.
+		.3 src.
+		.3 ....
+		.2 descargaModelo.py.
+		.2 requirements.txt.
+		.2 modelos.json.
+		.2 app.py.
+		.2 descargaModelo.py.
+		.2 detector.py.
+		.2 registro.csv.
+		.2 templates.
+		.3 base.html.
+		.3 faq.html.
+		.3 deteccion.html.
+		.3 index.html.
+		.3 historico.html.
+		.2 static.
+		.3 css.
+		.4 style.css.
+		.3 uploads.
+		.4 graficoHistorico.html.
+		.2 modelo-0.1.pth.
+	}
+	\caption{Estructura del Proyecto}
+	\label{esquemadirectorios}
+\end{figure}
+
+La carpeta \textbf{proyecto} contiene el proyecto directamente clonado, pero el fichero \emph{Dockerfile} dispone todo según se corresponde automáticamente, no obstante el contenido de \emph{proyecto/src} está tanto en dicho directorio como en el directorio padre.
+
+Además es importante remarcar la presencia de los siguientes ficheros:
+
+\begin{itemize}
+    \item \textbf{app.py} y \textbf{detector.py} deberán estar a la misma altura de directorios que la carpeta \textbf{detectron2}
+    \item Si no está presente \textbf{registro.csv} en dicho directorio se creará uno nuevo perdiendo la información guardada hasta ese momento
+    \item La descarga del modelo es bastante pesada, y aunque cabía la posibilidad de lanzar el fichero \textbf{descargaModelo.py} si no se encuentra el modelo para así asegurar la ejecución, el proceso de descarga se puede demorar por lo que se obvia la presencia del fichero \emph{modelo-0.1.pth}
+\clearpage
+    \item Para poder mostrar un histórico y en caso de que no haya valores suficientes, el fichero \emph{graficoHistórico.html} debe estar presente desde el primer momento
+\end{itemize}
+
+\section{Manual del programador}
+En este apartado se detallará cómo está organizado el proyecto y qué ficheros se han utilizado en el desarrollo para que en un futuro pueda ser comprendido correctamente y ayude en el proceso de edición o mejora.
+
+\subsection{Ficheros y directorios}
+
+\begin{itemize}
+    \item \textbf{src/app.py:} Fichero principal de la aplicación que contiene el código \emph{Flask}, está estructurado en \emph{routes} que identifican cada método o función con una sección de la web y las peticiones a las que responde.
+    A nivel de configuración y más allá del contenido de los propios métodos, se puede personalizar la dirección IP en la que se servirá la aplicación web y el modo \emph{debug} en la parte inferior de la aplicación. 
+    
+    \item \textbf{src/detector.py:} Fichero que contiene la clase del detector creado para este proyecto. Utiliza el objeto \emph{DefaultPredictor} de \emph{Detectron2} para instanciarlo, darle una configuración o \emph{cfg} y ejecutar la detección sobre el fichero que recibe.
+    
+    \item \textbf{src/static/css/style.css:} Fichero de estilos para los archivos \emph{HTML} en \emph{templates}. Si se modifica la ruta deberá de modificarse también la referencia en dichos ficheros.
+    
+    \item \textbf{src/static/uploads/graficoHistórico.html:} Fichero generado por \emph{Plotly} y que por si mismo contiene todo el código para ser interactivo. Puede abrirse en el navegador de forma independiente.
+    
+    \item \textbf{src/templates/base.html:} Fichero \emph{HTML} que se utiliza principalmente para organizar la \emph{navbar} de \emph{Bootsrap} y las secciones que comparten todas las páginas, de esa forma el resto de ficheros \emph{HTML} extienden de este mismo y puede modificarse a la vez todos las secciones comunes desde este fichero.
+    
+    \item \textbf{Dockerfile:} Fichero para la importación y ejecución creado a partir del fichero oficial de \emph{Detectron2} disponible en su repositorio\footnote{https://github.com/facebookresearch/detectron2}. 
+    Partiendo de una imágen de \emph{NVIDIA} se establece un usuario, un directorio padre y se clona los ficheros de \emph{Detectron2} instalando las dependencias. 
+    
+    Posteriormente desde \emph{Github} se importa este proyecto y se estructuran los ficheros más importantes. Por último con el fichero \emph{descargaModelo.py} se descarga desde \emph{Google Drive} el fichero pesos debido a que \emph{Github} no permite alojarlo debido a su tamaño. Una vez finalizado el proceso la imagen está lista para generar contenedores.
+    
+    Se ha probado a generar imágenes de menor tamaño usando por ejemplo la imagen oficial de \emph{Docker Hub} de \emph{Debian} pero puede mostrar incompatibilidades con \emph{Detectron2} y por ello no se ha utilizado finalmente.
+    
+    \item \textbf{registro.csv:} Fichero que contiene el registro de detecciones por tamaño y fecha.
+    \item \textbf{modelo.pth:} Fichero de pesos generado por la red neuronal.
+    \item \textbf{detectron2/:} Directorio oficial de \emph{Detectron2}
+    \item \textbf{Conversor y Registro COCO.ipynb:} \emph{Notebook} creado para el recorrido, procesado y generación del fichero \emph{JSON} para el registro del conjunto de imágenes en el proceso de entrenamiento y test.
+    \item \textbf{Separador de Mascaras.ipynb:} \emph{Notebook} que se creó con la idea de observar la diferencia de utilizar máscaras únicas o individuales. Partiendo de un fichero de máscara binaria, genera tantos como defectos contenga de forma individual.
+    \item \textbf{requirements.txt:} Fichero de texto que contiene las bibliotecas requeridas para este proyecto, el fichero \emph{Dockerfile} se encarga de recorrerlo e instalarlo automáticamente en el despliegue para que el usuario no tenga que hacerlo.
+    \item \textbf{modelos.json:} Fichero de diccionarios que contiene los modelos registrados con la estructura : \emph{Nombre:URL} de forma que la aplicación al iniciarse descarga el fichero y lo sobrescribe, lo recorre y comprueba el número de versión para descargar la última versión. Dichos modelos también son alojados en \emph{Google Drive} debido a su tamaño.
+    \item \textbf{updateDocker.bat:} Fichero informal que se creó a la hora de trabajar con \emph{Pycharm} y \emph{Visual Studio Code}. Ya que en Windows no es posible la ejecución y pruebas del proyecto, contiene un par de líneas que permiten copiar el contenido completo del proyecto al contenedor \emph{Docker} ejecutándose y actualizando el contenido para su prueba inmediata.
+    Los comandos siguen la estructura: 
+    
+   \emph{docker cp directorioHostOrigen nombreContenedor:directorioDestinoContenedor}
+    
+\end{itemize}
+
+
+\section{Compilación, instalación y ejecución del proyecto}
+En esta sección se describirá el proceso para la instalación y uso del proyecto de cara al desarrollo y modificación por parte de un programador. Para la instalación y uso por parte del usuario hay más detalles en la sección \nameref{instalaciondeusuario}
+
+Hay 2 alternativas para la instalación del proyecto con intención de modificarlo:
+
+\begin{itemize}
+    \item Instalar mediante el \emph{Dockerfile} la imagen que se facilita y que contendrá el proyecto, generar un contenedor y mantenerlo en ejecución mientras se hacen los cambios normalmente desde el \emph{host} con un editor más amigable, ya que la interfaz de los contenedores es algo tosca.
+    \item Inicializar un directorio en una cuenta personal en \emph{Google Colab} que finalmente se almacenará en la unidad de \emph{Google Drive} de la cuenta asociada
+\end{itemize}
+
+Debido a que el primer punto se cubrirá de forma más detallada en la sección de usuario, se procederá ahora a explicar cómo se podría preparar un directorio personal en \emph{Google Drive} y clonar el proyecto para editar y ejecutarlo desde \emph{Google Colab.}
+
+Sin embargo este método tiene un problema y al alojar nuestros ficheros en \emph{Google Drive}, no podemos hacer uso de un editor de texto o \emph{IDE} que nos facilite la edición de código. Una solución puede ser la sincronización de \emph{Visual Studio Code} con \emph{Google Drive}, pero ya que en este proyecto se ha trabajado con el proyecto local, no se abordará esta situación.
+
+\begin{enumerate}
+    \item \textbf{Creación del directorio:} Primero se accede mediante una cuenta personal \emph{Gmail} a la unidad de \emph{Google Drive} donde según se considere se creará un directorio nuevo para una mejor organización.
+    
+    \item \textbf{\emph{Google Colab} y creación del \emph{Notebooks}:} Con este método se trabajará de forma similar a la de \emph{Jupyter} de \emph{Anaconda}, que es posible que el lector esté familiarizado.
+    
+    Se accede a \emph{Google Colab}\footnote{https://colab.research.google.com/notebooks/intro.ipynb} y seguramente se presente un \emph{Notebook} de introducción. Se crea uno nuevo con un nombre a elegir libremente pero manteniendo la extensión \emph{.ipynb}.
+    
+    \item \textbf{Disposición e instalación:} El primer paso es integrar la unidad de \emph{Google Drive} con el \emph{Notebook}.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.6\textwidth]{p1}
+	\caption[Integración de Google Drive]{Integración de Google Drive}
+    \end{figure}
+    
+    Las diferentes celdas se ejecutan con un icono a la izquierda aunque desde el menú \emph{Entorno de ejecución} es posible ejecutarlas todas.
+    
+    Es posible que el código de la figura superior nos pregunte por un código generado por seguridad en un enlace, teniendo iniciada la sesión de \emph{Google} basta con visitar la dirección y copiar y pegar el código que se facilita. Hecho esto se montará la unidad de \emph{Google Drive}.
+    
+    A partir de aquí es posible recorrer los directorios con \emph{cd} ó \emph{ls} para ver el contenido.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{p2}
+	\caption[Recorrido de directorios]{Recorrido de directorios}
+    \end{figure}
+    
+    A continuación instalamos e importamos \emph{pyyaml} y \emph{torch}
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{p3}
+	\caption[Instalación de dependencias]{Instalación de dependencias}
+    \end{figure}
+    
+    Posteriormente se clona e instala el repositorio oficial de \emph{Detectron2}
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{p4}
+	\caption[Instalación de Detectron2]{Instalación de Detectron2}
+    \end{figure}
+    
+    Este proceso se puede demorar y hay que tener en cuenta de que al no estar en un entorno virtual, puede haber dependencias no instaladas, por lo que es posible que al ejecutar determinadas celdas se nos solicite la instalación de alguna biblioteca mediante \emph{pip install}. Dichos comandos pueden ejecutarse normalmente de forma individual por celda pero si se ejecutan varios deben de ir precedidos por el símbolo \emph{!} de cierre de exclamación.
+    
+    Por último se importan bibliotecas y clases básicas de \emph{Detectron2} como se recomienda en la documentación oficial.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{p5}
+	\caption[Importación de bibliotecas básicas]{Importación de bibliotecas básicas}
+    \end{figure}
+    
+    \item \textbf{Clonación del proyecto:} Posteriormente se clona el proyecto con un comando de \emph{git} asegurándonos de estar dentro del directorio de \emph{Detectron2}
+    
+    \emph{! git clone https://github.com/fyi0000/TFG-GII-20.04}
+    
+    \item \textbf{Organización del proyecto:} Una vez clonado el proyecto, se deben de disponer los ficheros de forma que \emph{app.py, detector.py, descargarModelo.py, static} y \emph{templates} estén a la misma altura que el directorio \emph{detectron2}.
+    
+    Si hay algún problema de importación simplemente usamos \emph{cd} ó \emph{ls} para asegurarnos que la disposición es correcta.
+    
+    \item \textbf{Uso de ngrok:} \emph{ngrok} nos permite ejecutar de forma local en \emph{Colab} una aplicación \emph{Flask} y a la vez acceder como si se estuviese ejecutando en nuestra máquina, para ello primero instalamos la biblioteca con:
+    
+    \emph{!pip install flask-ngrok}
+    
+    Y posteriormente editamos el fichero \emph{app.py} añadiendo estas líneas en la cabecera
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.6\textwidth]{p6}
+	\caption[Importación de bibliotecas básicas]{Importación de bibliotecas básicas}
+    \end{figure}
+    
+    Ahora cuando se ejecute la aplicación, además de la traza normal de \emph{Flask} nos facilitará una \emph{URL} temporal acabada en \emph{ngrok.io} que nos llevará a la aplicación.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.3\textwidth]{p7}
+	\caption[Importación de bibliotecas básicas]{Importación de bibliotecas básicas}
+    \end{figure}
+    
+    Conviene recordar además que la ejecución continuada en \emph{Google Colab} está limitada y podría dejar de ejecutarse nuestra aplicación si se mantiene en ejecución durante demasiado tiempo. El límite es de unos 60 minutos.
+    
+\end{enumerate}
+
+\clearpage
+
+\subsection{Funcionamiento concurrente de la aplicación}
+A nivel de programador es necesario tener presente que \emph{Flask} solo admite por defecto una petición de forma síncrona, por lo que como se ha observado en las pruebas que se comentan en la siguiente sección, las detecciones concurrentes no son una opción por defecto.
+
+Sin embargo y a juicio del lector, es posible indicar en el fichero \emph{app.py} a \emph{Flask} que se admitan diferentes peticiones simultáneas, aunque se avisa de que el rendimiento se puede degradar notablemente.
+
+La forma más común es añadir en la última fila del fichero \emph{app.py}, en el método \emph{\_\_init\_\_} donde tiene lugar el lanzamiento y se indica el puerto, la frase \emph{threaded=True} de forma que el resultado sería:
+
+\begin{center}\emph{app.run(host=0.0.0.0, threaded=True)}\end{center}
+
+\clearpage
+
+\section{Pruebas del sistema}
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{>{\centering\arraybackslash}m{5cm} >{\centering\arraybackslash}m{5cm} p{9cm}}
+		    \hline
+			\textbf{Prueba Realizada}  & \textbf{Resultado}\\ \hline \hline
+    			    Iniciar la aplicación mediante ``sudo python app.py'' & La aplicación funciona con normalidad.\\ \hline
+    			    Iniciar la aplicación mediante ``python app.py'' & La aplicación ha funcionado en ocasiones pero al no tener permisos de escritura lanza errores. \\ \hline
+    			    Acceder a la sección de \emph{FAQ}(Preguntas frecuentes) & Se accede correctamente y los hiperenlaces son accesibles. \\ \hline
+    			    Detección de una imagen \emph{test} & La aplicación funciona y muestra resultados. Las descargas funcionan correctamente. \\ \hline
+    			    Detección de una imagen \emph{training} & La aplicación funciona con normalidad y los resultados son excesivamente buenos, como se esperaba. \\ \hline
+    			    Detección en una radiografía sin defectos & Se muestran los resultados y se indica correctamente que no hay detecciones. Algunas marcadas por los tutores aparentemente sin defectos parecen tener alguno pequeño. \\ \hline
+    			    Detección con imagen ajena al conjunto & La aplicación funciona y a veces detecta falsos positivos y a veces no detecta nada y lo indica correctamente. \\ \hline
+    			   
+		\end{tabular}
+		\caption{Pruebas de la aplicación}
+		\label{tablapruebas1}
+	\end{center}
+\end{table}
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{>{\centering\arraybackslash}m{5cm} >{\centering\arraybackslash}m{5cm} p{9cm}}
+		    \hline
+			\textbf{Prueba Realizada}  & \textbf{Resultado}\\ \hline \hline
+   		            Detección de imagen con extensión \emph{PNG} & La detección es correcta. \\ \hline
+			    	Detección de imagen con extensión \emph{JPG} & La detección es correcta. \\ \hline
+    			    Detección de imagen con extensión \emph{JPEG} & La detección es correcta. \\ \hline
+			    	Detección de fichero \emph{PDF} & La aplicación rechaza el fichero por extensión correctamente. \\ \hline
+			    	Acceso desde dos pestañas concurrentes & La aplicación funciona correctamente. \\ \hline
+			    	Detección de dos ficheros de forma concurrente & Como es de esperar, \emph{Flask} solo admite una petición y muestra en ambas el resultado de la última imagen que le ha sido enviada. \\ \hline
+    			    Descarga de resultados & Se descargan correctamente, algo más de demora en la composición pero todo funciona según requisitos. \\ \hline
+        			Borrado del fichero ``modelo-0.1.pth'' y detección & Se muestra un error web y en la consola se muestra la traza de la excepción y remarcado el mensaje de captura preguntando si existe dicho fichero. \\ \hline
+        			Actualización del registro tras detección & Se actualiza la fila correspondiente o se añade una fecha nueva de forma correcta. \\ \hline
+		\end{tabular}
+		\caption{Pruebas de la aplicación}
+		\label{tablapruebas2}
+	\end{center}
+\end{table}
+
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{>{\centering\arraybackslash}m{5cm} >{\centering\arraybackslash}m{5cm} p{9cm}}
+		    \hline
+			\textbf{Prueba Realizada}  & \textbf{Resultado}\\ \hline \hline
+			    	Actualización del modelo & La aplicación descarga el nuevo fichero y actualiza la variable sesión que indica que fichero se usará en la próxima instanciación del Detector. \\ \hline
+        			Actualización del modelo con enlace erróneo & Al comprobarse de forma independiente tras el proceso la existencia del fichero mostrado en \emph{modelos.json}, al no encontrarse se indica que no se ha podido actualizar. \\ \hline
+        			Reinicio tras actualización & Se muestra la versión actual correcta y se añade que es la más actual. \\ \hline
+        			Detección de una imagen de dimensiones reducidas & Al ser tan pequeño, \emph{Plotly} genera un gráfico de unas dimensiones también muy pequeñas, pero de esta forma se ajusta mejor a imágenes de un tamaño normal. \\ \hline
+        			Ejecución de la aplicación sin conexión a Internet & Los CDN no funcionan y la apariencia se degrada, la función de actualización y \emph{loaders} pierden funcionalidad. \\ \hline
+
+    			    
+		\end{tabular}
+		\caption{Pruebas de la aplicación}
+		\label{tablapruebas2}
+	\end{center}
+\end{table}

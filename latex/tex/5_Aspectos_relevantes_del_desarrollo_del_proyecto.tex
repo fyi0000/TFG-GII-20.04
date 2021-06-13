@@ -1,0 +1,309 @@
+\capitulo{5}{Aspectos relevantes del desarrollo del proyecto}
+A continuación se detalla el proceso de registro y posterior entrenamiento de la red con nuestras propias imágenes. Posteriormente se explicará el proceso y evolución del modelo conforme se han ido aumentando las iteraciones en la fase de entrenamiento.
+
+Ejemplo de imágenes con las que se cuenta y una máscara de ejemplo:
+
+       \begin{figure}[htb]
+    	\centering
+    	\includegraphics[width=0.8\textwidth]{imagenEjemplo}
+    	\caption[Ejemplo de imagen con defectos]{Ejemplo de imagen con defectos}
+        \end{figure}
+        
+        \begin{figure}[htb]
+    	\centering
+    	\includegraphics[width=0.8\textwidth]{mascaraEjemplo}
+    	\caption[Ejemplo de máscara binaria]{Ejemplo de máscara binaria}
+        \end{figure}
+
+
+\section{Registro del conjunto}
+
+El primer paso que se ha llevado a cabo en este proyecto a la hora de trabajar con las imágenes propias ha sido el \emph{registro} del conjunto de imágenes en el formato \emph{COCO} con el que trabaja \emph{Detectron 2}. Al final del proceso se dispondrá de un fichero en formato \emph{JSON} que acompañará al conjunto de imágenes.
+La estructura se ha comentado anteriormente en la sección \nameref{TeoriaFormatoCOCO}.
+
+Pasos importantes :
+
+\begin{enumerate}
+    \item \textbf{Organización del conjunto}: Es importante antes de comenzar a trabajar con las imágenes, disponerlas de forma que al recorrer las imágenes estén todas a un mismo nivel de directorios y con unos nombres que identifiquen claramente tanto la propia imagen como sus distintas máscaras.
+    
+    Estructura de nombres:
+    \begin{itemize}
+       \item \textbf{Nombre de imagen}: ``P0001\textunderscore0001.png''
+       \item \textbf{Máscaras de la imagen}: ``P0001\textunderscore0001\textunderscore0.png'', ``P0001\textunderscore0001\textunderscore1.png''...
+    \end{itemize}
+    
+    \item \textbf{Imágenes:} La primera sección del fichero \emph{JSON} suelen ser los ficheros de imagen, este apartado recoge:
+    
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{registroImagenes}
+    \caption[Sección de imágenes en el \emph{JSON}]{Sección de imágenes en el \emph{JSON}}
+    \end{figure}
+    
+    \begin{itemize}
+        \item Dimensiones de la imagen
+        \item Identificador de la imagen
+        \item Nombre del fichero
+    \end{itemize}
+    
+    El nombre del fichero imagen es importante para que posteriormente puedan localizarse correctamente las imágenes.
+    
+    \clearpage
+    
+    \item \textbf{Categorías ó Clases:} Esta sección define las clases de objetos presentes en el conjunto
+    
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{registroCategorias}
+    \caption[Sección de categorías en el \emph{JSON}]{Sección de categorías en el \emph{JSON}}
+    \end{figure}
+        
+    \begin{itemize}
+        \item ``Supercategoría'' o categoría padre
+        \item Identificador de la categoría o clase
+        \item Nombre de la categoría
+    \end{itemize}
+        
+    En este caso solo se cuenta con una clase \emph{Welding}, la categoría padre es irrelevante y el nombre se tiene en cuenta sólo si se desea añadir metadatos, etiquetas en los resultados.
+    
+    \clearpage
+    
+    \item \textbf{Anotaciones:} En esta última sección se recoge la información de cada defecto recogido en las máscaras binarias, siguiendo la estructura antes vista en la sección \nameref{figuraAnotaciones}
+            
+    \begin{figure}[htb]
+        \centering
+        \includegraphics[width=0.8\textwidth]{registroAnotaciones}
+        \caption[Sección de anotaciones en el \emph{JSON}]{Sección de anotaciones en el \emph{JSON}}
+    \end{figure}
+    
+    \begin{itemize}
+        \item \textbf{\emph{id}:} Identificador del defecto actual
+        \item \textbf{\emph{image\textunderscore id}:} Identificador de la imagen en la que se encuentra
+        \item \textbf{\emph{category\textunderscore id}:} Identificador de la categoría o clase a la que pertenece
+        \item \textbf{\emph{iscrowd}:} Indicador de conjunto o unicidad
+        \item \textbf{\emph{area}:} Área total del defecto
+        \item \textbf{\emph{bbox}:} \emph{Bounding box} que ``enmarca'' el defecto
+        \item \textbf{\emph{segmentation}:} Lista de pares de coordenadas 2 a 2 que recorren el contorno del efecto
+        \item \textbf{\emph{width y height}:} Dimensiones de la imagen de máscara
+    \end{itemize}
+        
+\end{enumerate}
+
+
+\section{Entrenamiento}
+Esta fase se ha llevado a cabo en \emph{Google Colaboratory} siguiendo las instrucciones de instalación, configuración y entrenamiento recogidas en la documentación oficial de \emph{Detectron2}\cite{DT2:Documentacion}.
+
+Se dispone de 21 imágenes etiquetadas de las cuales 11 se destinarán al entrenamiento y las 10 restantes a test y evaluación de resultados.
+
+\subsection{Estructura de ficheros}
+
+Organización de ficheros e imágenes que se ha seguido durante el entrenamiento. Es recomendable tener en cuenta que dentro de la carpeta \emph{detectron2\textunderscore repo} se encuentran las librerías propias a importar y para evitar avanzar y retroceder de directorio se recomienda que los ficheros recurrentes estén accesibles.
+
+\begin{figure}[h]
+	\dirtree{%
+		.1 /.
+		.2 detectron2\textunderscore repo.
+		.2 IMG.
+		.3 images.
+		.4 P0001\textunderscore0000.png.
+		.4 P0001\textunderscore0001.png.
+		.3 test.
+		.4 images.
+		.4 info.json.
+		.5 ...
+		.4 info.json.
+		.2 output.
+		.3 model\textunderscore final.pth.
+	}
+	\caption{Estructura del directorio de entrenamiento}
+	\label{estructuraentrenamiento}
+\end{figure}
+
+\clearpage
+
+\begin{itemize}
+    \item \textbf{detectron2\textunderscore repo:} Directorio de instalación de \emph{Detectron2}
+    \item \textbf{images:} Directorio con las imágenes originales
+    \item \textbf{test:} Subdirectorio con la misma estructura, imágenes de test y fichero de registro
+    \item \textbf{info.json:} Fichero \emph{JSON} generado durante el registro de las imágenes
+    \item \textbf{output:} Directorio de salida de \emph{Detectron2}, puede configurarse dentro del código
+    \item \textbf{model\textunderscore final.pth:} Fichero de pesos final que se utilizará para instanciar el objeto \emph{Predictor} que posteriormente será el que ejecute el modelo entrenado
+\end{itemize}
+
+\subsection{Registrar instancias}
+Una vez dispuesto el directorio lo primero es registrar las imágenes en \emph{Detectron2}, para ello se indica el directorio donde se encuentran las imágenes y el fichero \emph{JSON} que contiene su información.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\textwidth]{registroinstancias}
+    \caption[Registro de las imágenes]{Registro de las imágenes}
+\end{figure}
+
+Opcionalmente también es posible registrar en metadatos la información de etiquetas en caso de que se quisiera añadir como nombre de clases o categorías. 
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{registrometadatos}
+    \caption[Registro de metadatos]{Registro de metadatos}
+\end{figure}
+    
+En caso de haber cualquier fallo o incompatibilidad entre el fichero y las imágenes, en este punto se nos indicaría que por ejemplo el identificador de imagen de un defecto no encuentra ninguna imagen con dicho identificador o que la segmentación no es correcta.
+
+\clearpage
+
+Es recomendable comprobar con ayuda del objeto \emph{Visualizer} de \emph{Detectron2} que el registro ha sido satisfactorio y las imágenes están correctamente registradas.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.9\textwidth]{resultadoregistro}
+    \caption[Resultado de registrar las imágenes]{Resultado de registrar las imágenes}
+\end{figure}
+    
+\clearpage
+    
+\subsection{Configuración del entrenamiento}
+Después de ver que las imágenes están correctamente registradas se procede con la configuración del propio entrenamiento. Hay algunos parámetros que se recomienda dejar como aparecen en la mayoría de guías.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=1.2\textwidth]{configuracionentrenamiento}
+\caption[Configuración del entrenamiento]{Configuración del entrenamiento}
+\end{figure}
+    
+\begin{enumerate}
+    \item Primero se recoge en una variable la configuración vacía,
+    \begin{itemize}
+        \item En este caso se va a utilizar el objeto \emph{DefaultTrainer} que recoge configuración ya presente en otros modelos de \emph{Detectron2} y nos permite sobreescribirla según las necesidades del caso. Otra alternativa más costosa ya que la configuración se construye desde la base es el objeto \emph{SimpleTrainer}\cite{DT2:Training}
+    \end{itemize}
+    \item Se carga el fichero de configuración existente del modelo \emph{R50 FPN} para a continuación modificar la configuración
+    \item \textbf{DATASETS.TRAIN:} Conjunto \emph{COCO} ya registrado sobre el que se va a entrenar
+    \item \textbf{MODEL.WEIGHTS:} Conjunto de pesos de \emph{model zoo}, son los pesos por defecto del conjunto incluído en \emph{Detectron2}
+    \item \textbf{BASE\textunderscore LR:} \emph{Learning Rate}
+    \item \textbf{MAX\textunderscore ITER:} Número de iteraciones
+    \item \textbf{NUM\textunderscore CLASSES:} Número de clases presentes en el conjunto
+    \item Finalmente se genera un directorio de salida en este caso \emph{output} en caso de no existir
+\end{enumerate}
+
+\subsection{Lanzamiento del entrenamiento}
+
+Antes de lanzar el entrenamiento y para comprobar rápidamente que \emph{Google Colaboratory} no tiene ninguna incidencia en ese momento, mediante la función \emph{cuda.is\textunderscore available()} de la librería \emph{Torch} se puede obtener una traza que nos confirme que todo funcione y que se tenga correctamente activada la GPU en el notebook
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{disponiblidadgpu}
+\caption[Disponibilidad de la GPU]{Disponibilidad de la GPU}
+\end{figure}
+
+Una vez confirmado que todo es correcto, se instancia el objeto \emph{DefaultTrainer} con la \emph{cfg} o configuración que se acaba de ajustar y se lanza el entrenamiento.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.6\textwidth]{lanzamientoentrenamiento}
+\caption[Lanzamiento del entrenamiento]{Lanzamiento del entrenamiento}
+\end{figure}
+
+\clearpage
+
+Al utilizar la máquina de \emph{Google Colaboratory} depende del momento en el que se realice el entrenamiento para que el proceso se demore en mayor o menor medida. En caso de haber imágenes incompatibles o que algunas dimensiones no sean correctas, \emph{DefaultTrainer} intentará corregirlas y en caso de no ser posible, descartará las imágenes.
+
+El resultado es una traza similar a la siguiente:
+
+\begin{figure}[htb]
+\includegraphics[width=1.2\textwidth]{trazaentrenamiento}
+\caption[Traza del entrenamiento]{Traza del entrenamiento}
+\end{figure}
+
+Significado de los términos:
+
+\begin{itemize}
+        \item \textbf{eta}: Tiempo restante del entrenamiento
+        \item \textbf{iter}: Iteración, cada 100, en la que se encuentra el entrenamiento
+        \item \textbf{loss}: Medida de rendimiento que engloba las posteriores
+        \item \textbf{loss\textunderscore cls}: Rendimiento al reconocer las clases
+        \item \textbf{loss\textunderscore box\textunderscore reg}: Rendimiento al reconocer las regiones de objeto
+        \item \textbf{loss\textunderscore mask}: Rendimiento de las segmentaciones o \emph{pred\textunderscore masks}
+        \item \textbf{loss\textunderscore rpn\textunderscore cls}: Rendimiento al reconocer la clase en las imágenes
+        \item \textbf{loss\textunderscore rpn\textunderscore loc}: Rendimiento al localizar las clases en al imagen
+\end{itemize}
+
+\subsection{Observaciones en el entrenamiento}
+
+Dos de los principales problemas en \emph{Machine Learning} a la hora de entrenar una red neuronal son el \emph{Overfitting} o sobreajuste, sobreentrenamiento y \emph{Underfitting} o entrenamiento insuficiente.
+
+Conforme se han ido haciendo pruebas con más o menos iteraciones y mayor o menor \emph{Learning Rate} se ha realizado un entrenamiento prolongado de hasta las 1500 iteraciones para comprobar, junto con la herramienta \emph{TensorBoard}, la evolución del \emph{Loss} durante el entrenamiento y posterior validación con el conjuto de test.
+
+\begin{figure}[htb]
+\includegraphics[width=1.0\textwidth]{graficaloss}
+\caption[Evolución del Loss]{Evolución del Loss}
+\end{figure}
+
+\begin{figure}[htb]
+\includegraphics[width=1.0\textwidth]{graficavalloss}
+\caption[Evolución del \emph{Loss} de Validación]{Evolución del \emph{Loss} de Validación}
+\end{figure}
+
+Como se puede observar, alrededor de las 500 iteraciones el incremento del \emph{Loss} nos indica que se comienza a producir el \emph{Overfitting}. Esto lo que quiere decir es que el modelo se comportará de forma deficiente si se encuentra con objetos ligeramente diferentes a los del conjunto de entrenamiento y no los reconocerá correctamente.
+Si a partir de ese punto el entrenamiento se prologa y se aumenta el sobre ajuste, el resultado final que tendremos será que el conjunto de entrenamiento se está aprendiendo ``en exceso'', provocando que si el modelo se encuentra con imágenes con ciertas diferencias a las del conjunto de entrenamiento, el modelo fallará.
+
+Además de estos parámetros, se han definido otras métricas que son \emph{Precision}, \emph{Recall} y \emph{F1}.
+
+\subsection{Evolución en las detecciones}
+
+Para analizar la evolución del rendimiento de la red conforme avanza el entrenamiento, se han entrenado distintos modelos con un número determinado de iteraciones y ejecutado sobre las mismas imágenes de test analizando su comportamiento. 
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{g1}
+\caption[Evolución del rendimiento Caso 1]{Evolución del rendimiento Caso 1}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{g2}
+\caption[Evolución del rendimiento Caso 2]{Evolución del rendimiento Caso 2}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{g3}
+\caption[Evolución del rendimiento Caso 3]{Evolución del rendimiento Caso 3}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{g4}
+\caption[Evolución del rendimiento Caso 4]{Evolución del rendimiento Caso 4}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{g5}
+\caption[Evolución del rendimiento Caso 5]{Evolución del rendimiento Caso 5}
+\end{figure}
+
+La evolución del rendimiento en todos los casos alcanza su máximo en torno a la iteración 500-600 y no se observa una mejora más allá de dichas iteraciones. Se ha contemplado también el componente de aleatoriedad durante el entrenamiento por lo que también se han evaluado modelos con las mismas iteraciones paralelamente, siendo la conclusión final la misma.
+
+\clearpage
+
+A sí mismo se han observado 2 fenómenos adicionales conforme avanzaba el sobre entrenamiento u \emph{Overfitting}. 
+
+\begin{itemize}
+    \item \textbf{Solapamiento de las detecciones:} En determinadas ocasiones, el modelo hace 2 predicciones sobre un mismo punto en el que la confianza que recibe la detección es diferente para distintas zonas del área marcada, por lo que puede darse el caso al trabajar con imágenes como estas, que un defecto esté marcado sobre otro. Este fenómeno casi es inexistente en las primeras iteraciones y pasadas las 600 se observa de manera más frecuente.
+    
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{superposicion}
+    \caption[Ejemplo de superposición de los defectos]{Ejemplo de superposición de los defectos}
+    \end{figure}
+    
+\clearpage
+    
+    \item \textbf{Incremento de los falsos positivos:} El modelo se comporta bastante bien en cuanto a falsos positivos, pero las imágenes cuentan con determinadas figuras propias de piezas metálicas, en nuestro caso cabezales o agujeros roscados, que presentan una forma circular similar a la de un defecto y que puede dar lugar a la confusión del modelo. Conforme se incrementan las iteraciones más allá de las 700 iteraciones, el incremento de este fenómeno también es notable.
+    
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{falsopositivo}
+    \caption[Ejemplo de falso positivo]{Ejemplo de falso positivo}
+    \end{figure}
+    
+\end{itemize}

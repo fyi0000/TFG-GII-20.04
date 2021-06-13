@@ -1,0 +1,228 @@
+\capitulo{3}{Conceptos teóricos}
+
+\section{Machine Learning y técnicas utilizadas}
+
+La parte más importante de este proyecto recae sobre la aplicación del \emph{Machine Learning} y una de sus ramas, el \emph{Deep Learning}.
+
+\subsection{¿Qué es el \emph{Machine Learning}?}
+El \emph{Machine Learning}, también referido como aprendizaje automático, es el desarrollo de algoritmos que permitan el aprendizaje de determinada información por parte de las máquinas a partir de unos datos facilitados. Esto significa que este proceso se llevará a cabo de una forma autónoma y intervención directa del usuario. 
+Los algoritmos trabajan sobre un conjunto de datos destinados al entrenamiento, que permitirán la ejecución de tareas de clasificación, por ejemplo de forma automatizada. 
+Esto significa que un mismo algoritmo puede aprender a clasificar diferentes clases de objetos según se le proporcione un conjunto de entrenamiento sin que el programador tenga que realizar ningún cambio interno en el algoritmo.
+
+Categorías de \emph{Machine Learning}:
+
+\begin{itemize}
+    \item \textbf{Aprendizaje Supervisado:} Los algoritmos de aprendizaje automático que pertenecen a esta categoría obtienen un modelo a partir de unos datos de entrada y una salida conocida, de forma que las respuestas ajustan el modelo para en el futuro hacer predicciones sobre unos datos de entrada nuevos y cuya respuesta es desconocida.
+    Las dos técnicas más comunes para el desarrollo de los modelos mediante Aprendizaje Supervisado son \emph{Regresión} y \emph{Clasificación.}
+    El sistema empleado en este proyecto pertenece a esta categoría, siendo capaz de diferenciar dentro de la imagen regiones que son de interés de las que no.
+    
+    \item \textbf{Aprendizaje No Supervisado:} Los algoritmos de esta categoría tienen como objetivo extraer determinados patrones implícitos en un conjunto de datos, ya sea para agrupar o diferenciar unos de otros. En este tipo de aprendizaje no se utilizan respuestas predefinidas a los datos de entrada facilitados. La técnica más común en este tipo de aprendizaje es el \emph{Clustering.} Este último método también se puede aplicar a la segmentación de imágenes aunque no ha sido el caso de este proyecto.\cite{ML:machinelearning_conceptos}
+
+\end{itemize}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.0\textwidth]{diagramaML}
+	\caption[Técnicas del Machine Learning]{Técnicas del Machine Learning}
+\end{figure}
+
+\clearpage
+
+\subsection{¿Qué es el Deep Learning?}
+El \emph{Deep Learning} ó Aprendizaje Profundo en castellano, es una rama del \emph{Machine Learning} que se basa en imitar el funcionamiento de las \emph{Redes neuronales} humanas y sus distintas conexiones entre capas. Las \emph{Redes neuronales} se organizan en capas de entrada, ocultas y de salida. Conforme la información va siendo procesada y las capas ocultas reciben información, se generan salidas que a su vez sirven de entrada para la siguiente capa. El número de veces que este proceso se repite definirá la profundidad que tenga el modelo.
+
+Conforme se obtienen unos resultados, se hace una comparación con una serie de resultados predefinidos antes del entrenamiento. Dependiendo de las coincidencias obtenidas entre los resultados obtenidos y los resultados, se estima como de bueno es el rendimiento y el ajuste necesario de los parámetros o \emph{pesos} de las capas intermedias.
+
+La principal característica que diferencia el \emph{Deep Learning} del conjunto de métodos de \emph{Machine Learning} es que el \emph{Deep Learning} utiliza algoritmos para confeccionar una red neuronal que aprende la información partiendo de los datos proporcionados, generando decisiones propias. El \emph{Machine Learning} por su parte utiliza algoritmos para extraer la información de los datos facilitados y en base a ellos generar decisiones. 
+
+Además el \emph{Deep Learning} es capaz no solo de procesar la información etiquetada que se le proporciona, si no de etiquetar por sí mismo dicha información. Por ello, dependiendo de la aplicación que se le dé al \emph{Deep Learning}, se podría clasificar tanto como \emph{Aprendizaje Supervisado} ó \emph{Aprendizaje No Supervisado.}
+
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{estructuracapas}
+	\caption[Estructura de las Redes Neuronales]{Estructura de las Redes Neuronales}
+\end{figure}
+
+\section{Faster R-CNN y Redes Neuronales Convolucionales}
+
+\subsection{¿Cómo funciona la detección de objetos mediante Redes Neuronales?}
+Cuando se lleva a cabo la detección de objetos en imágenes con la ayuda de Redes Neuronales y más concretamente mediante \emph{R-CNN}, convencionalmente se llevan a cabo 3 fases:
+
+\begin{itemize}
+    \item \textbf{Generación de Regiones Propuestas:} En esta primera fase se seleccionan múltiples regiones de la imagen que podrían o no contener un objeto a reconocer. El número de este tipo de regiones pude rondar las miles para una sola imagen. Aunque pueden ser de múltiples tamaños y estar solapadas unas sobre otras.
+    \item \textbf{Extracción de Descriptores o Características:} Utilizando un vector de descriptores que reconocen las regiones, describen la imagen contenida en la región para poder ser reconocida posteriormente. Es la fase más importante para el correcto funcionamiento. 
+    \item \textbf{Clasificación:} Por último se clasifican las regiones según su contenido y se determina si contiene un objeto o por el contrario forma parte del fondo. Finalmente se clasifican los diferentes objetos detectados en las respectivas clases.
+\end{itemize}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{R-CNN_fases}
+	\caption[Flujo de funcionamiento de \emph{R-CNN}]{Flujo de funcionamiento de \emph{R-CNN} \cite{girshick2014rich}}
+\end{figure}
+
+\subsection{Redes Neuronales Convolucionales}
+Las \emph{Redes Neuronales Convolucionales} ó \emph{CNN} por sus siglas en inglés, son un tipo de redes neuronales caracterizadas por la presencia de una capa que les da nombre \emph{Capa Convolucional} y que destacan por comportarse especialmente bien a la hora de aplicarse en el reconocimiento de imágenes.
+
+El objetivo de este tipo de redes es similar al comportamiento del ojo humano, al observar un imagen, se segmenta según los diferentes componentes que presenta, como por ejemplo diferenciar personas en un parque del propio parque que forma parte del fondo de la imagen.
+
+Este tipo de redes tienen su origen en 1980, cuando el japonés \emph{Kunihiko Fukushima} \cite{wiki:Kunihiko_Fukushima} introdujo el \emph{Neocognitron}, una red neuronal básica para el aprendizaje no supervisado que funcionaba sobre imágenes. Ese mismo año el francés \emph{Yann LeCun}, implementó sobre este primer trabajo del japonés la llamada \emph{LeNet} que funcionaba sobre dígitos escritos para su reconocimiento.
+
+Este tipo de redes presentaban problemas en cuanto a la escala de imágenes, ya que el funcionamiento se degradaba conforme se incrementaban las dimensiones de las imágenes. La aparición e impulso del \emph{Deep Learning} en 2012 promovió el desarrollo de las \emph{CNN} y su aplicación a todo tipo de imágenes.
+
+\subsection{Componentes y Funcionamiento de las Redes Neuronales Convolucionales}
+
+Antes de comenzar con el proceso, es importante tener en cuenta que una imagen es una matriz de valores, esto significa que según el tamaño de la imagen tendremos una matriz de mayor o menor tamaño. A su vez esto significa que para el procesamiento de imagen se necesitarán un número diferente de neuronas.
+
+También hay que tener en cuenta el tipo de imagen que se está utilizando, ya que una imagen en escala de grises es una única matriz con valores únicos, mientras que una imagen en \emph{RGB}, los 3 canales de color, representan 3 matrices diferentes formando distintas capas que también se han de procesar.
+
+Esto puede representar un problema si se trabaja con imágenes de grandes dimensiones ya que a medida que se incrementa el tamaño, también lo hace la capacidad de computación necesaria para procesar dicha imagen.
+
+\begin{itemize}
+    \item \textbf{\emph{Input Layer} ó Capa de Entrada:} El primer paso es preprocesar la imagen y como se ha comentado, se descomponen las capas que la forman, dependiendo del tipo de imagen que sea, escala de grises o en color y del tamaño de la misma.
+    \item \textbf{Capa Convolucional:} Esta capa es similar a una capa oculta de una red neuronal corriente que realiza una operación y se la trasmite a la siguiente. La principal diferencia es que en este caso las conexiones no son totales, es decir, no todas las neuronas están conectadas entre sí. Esto recibe el nombre de conectividad local. 
+    A su vez, se realizan las operaciones convolucionales propiamente dichas. El proceso consiste en, utilizando un kernel ó una matriz de unas determinadas dimensiones, recorrer la imagen por completo y realizar un producto escalar obteniendo una nueva matriz.
+    Esta matriz recoge las características o \emph{features} relevantes de la imagen, como los bordes y contornos de los objetos.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{convolucion}
+	\caption[Proceso de Convolución]{Proceso de Convolución \cite{cnn:convolucion}}
+    \end{figure}
+    
+    Dependiendo de la imagen, es posible que se deba aplicar la técnica llamada \emph{padding}. Esto implica incrementar en un determinado número de filas y columnas la matriz imagen con el objetivo de que se conserve información relevante presente en los bordes.
+    
+    \item \textbf{\emph{Pooling Layer}:} En esta capa, normalmente inmediatamente posterior a la Capa Convolucional, tiene como objetivo reducir las dimensiones de la matriz de características obtenida aplicando una técnica definida. Por ejemplo, una de las técnicas más usadas se basa en máximos o \emph{max-pooling}. Se recorre la matriz con otro kernel de determinado tamaño  y se conserva el máximo valor contenido en la matriz original.
+    
+    \begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{pooling}
+	\caption[Pooling]{Pooling \cite{cnn:pooling}}
+    \end{figure}
+    
+    \item \textbf{\emph{Fully Connected Layer}:} Conforme se suceden las convoluciones se reducen las dimensiones y finalmente obtendremos una capa en la que todas las neuronas están conectadas con las entradas de la siguiente. En esta capa se dividen los distintos pesos resultantes en las clases con las que se cuenta en el modelo, obteniendo una neurona para cada una. Por ello en esta capa se aplican las funciones de activación como puede ser \emph{SoftMax} obteniendo la probabilidad de que la entrada pertenezca a una de las clases resultantes.\cite{10.3389/frai.2020.00004}
+    
+\end{itemize}
+
+\subsection{R-CNN}
+Los problemas que presentaba \emph{CNN} en cuanto a las dimensiones de las imágenes y al número de regiones que podían contener objetos de interés lastraron su desarrollo.
+Por ello, en 2014 \emph{Ross Girshick}, propuso la red \emph{R-CNN} ó \emph{Regions with CNN features}. En definitiva los cambios que esta red presentaba eran, en primer lugar la extracción de regiones propuestas para su posterior combinación según similitud y por último establecer unas regiones propuestas candidatas a ser regiones de interés finales.\cite{R-CNN:article}
+
+\subsection{Faster R-CNN}
+Faster R-CNN y como su nombre indica representa un paso más allá respecto a R-CNN en cuanto a velocidad y simplicidad además de diferentes cambios: 
+
+\begin{itemize}
+    \item \textbf{Nueva capa:} Llamada \emph{ROI Pooling} extrae los vectores de características de la imagen con una misma longitud.
+    \item \textbf{Simplicidad:} \emph{Faster R-CNN} agrupa los 3 puntos del anterior apartado y junta las 3 fases en una única.
+    \item \textbf{Computaciones compartidas:} Cuando procesa una \emph{ROI} (Región de Interés) comparte mediante la \emph{ROI Pooling} las operaciones realizadas, que pueden reutilizarse y ahorra tiempo respecto a \emph{R-CNN}.
+    \item \textbf{Sin Caché:} No almacena en caché las características extraídas de la imagen y por lo tanto ahorra espacio en disco.
+    \item \textbf{RPN (Red de Regiones Propuestas):} Constituye una red neuronal completa que genera las \emph{ROI} en distintas escalas y se lo indica a \emph{Fast R-CNN}, una versión anterior contenida con el fin de escalar aún más la velocidad.
+    \item \textbf{Cajas de Anclaje o \emph{Anchor Boxes}:} En lugar de generar distintas instancias de una misma imagen con diferentes tamaños, con las \emph{Anchor Boxes} se crea una referencia con un determinado valor que indica tamaño o escala, de esta forma puede haber distintas \emph{Anchor Boxes} para una misma imagen optimizando la estructura. Esto sustituye a estructuras piramidales anteriores.
+
+\end{itemize}
+
+
+Finalmente el funcionamiento de \emph{Faster R-CNN} se resumiría de la siguiente forma:
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=1.0\textwidth]{faster-RCNN}
+	\caption[Flujo de funcionamiento de \emph{Faster R-CNN}]{Flujo de funcionamiento de \emph{Faster R-CNN} \cite{ren2016faster}}
+\end{figure}
+
+Primero el RPN genera las regiones propuestas de la imagen, generando para cada región un vector de características mediante el \emph{ROI Pooling}. Posteriormente el \emph{Fast R-CNN} clasifica estas regiones según los vectores obtenidos y se obtienen las ``calificaciones'' para cada objeto detectado indicando la confianza de acierto y las \emph{Bounding Boxes}, que envuelven el objeto y su contorno.
+
+\subsection{Calificación de objetos candidatos}
+Se entiende por calificación de los objetos candidatos como la asignación de un valor a una región en función de la calidad de la detección, es decir, su la detección es más o menos fiable.
+
+La calificación que recibe una determinada región propuesta depende de la \emph{Intersection-over-Union(IoU)}.
+
+La \emph{Intersection-over-Union} nos permite determinar cuanto se sobreponen dos regiones determinadas, de forma que cuanto más se ajusten ambas regiones mayor será la puntuación en un rango de 0 a 1. De esta manera en la fase de entrenamiento el objetivo es que las regiones sean lo más coincidentes posibles y por tanto que el valor de la IoU se acerque lo máximo a 1.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{IOU}
+	\caption[Intersection over Union]{Intersection over Union 
+	\cite{metrics:iou}}
+\end{figure}
+
+La IoU se obtiene de la división entre la región coincidente de las dos áreas entre la unión de ambas y según se obtenga un valor dentro de unos límites, \emph{RPN} otorga un positivo o negativo.
+
+$$
+\text{Calificación}(IoU)= \left\{ \begin{array}{lcc}
+             Positivo &   si  & IoU \geq 0.7 \\
+             \\ Positivo &  si & 0.5 < IoU \leq 0.7 \\
+             \\ Negativo &  si  & IoU < 0.3
+             \\ Ni Negativo ni Positivo &  si  & 0.3 \leq IoU \leq 0.5
+             \end{array}
+   \right.
+$$
+
+Las condiciones se resumen:
+
+\begin{itemize}
+    \item Si el valor de IoU es mayor a 0.7, se considera un \emph{positivo}.
+    \item Si la región no tiene un valor de 0.7 mínimo pero alcanza el 0.5 es \emph{positivo}.
+    \item Con un IoU de 0.3 o inferior es \emph{negativo}.
+    \item Por último si el valor está entre 0.3 y 0.5 no se considera ni positivo ni negativo y se descarta.
+\end{itemize}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Iou-results}
+	\caption[Mal resultado, buen resultado y el mejor resultado]{Mal resultado, buen resultado y el mejor resultado
+	\cite{metrics:iou-results}}
+\end{figure}
+
+\subsection{Métricas de clasificación del rendimiento}
+En este trabajo se utilizarán tres métricas muy utilizadas y aplicadas en la \emph{Clasificación Binaria} para analizar los resultados obtenidos. Estas son \emph{Precisión}, \emph{Exhaustividad} o \emph{Recall} en inglés y la combinación de ambas, \emph{F1.}\cite{metrics:guia-google}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.5\textwidth]{precision-recall}
+	\caption[Precisión y Recall]{Precisión y Recall
+	\cite{metrics:precision-recall}}
+\end{figure}
+
+
+\begin{itemize}
+    \item \textbf{Precision:} La precisión es una métrica para poner en valor cuantos de los resultados que se han calificado como positivos, son realmente positivos. Los valores van desde 0 hasta 1, significando, por ejemplo una precisión de 0.5 que se acierta un 50\% de las veces.
+    La fórmula es:
+    
+    \[
+    Precision = \frac{TP}{TP+FP}
+    \]
+    \centering(TP = Positivo Verdadero, TN = Negativo Verdadero, FP= Falso Positivo, FN = Falso Negativo)
+    
+    \item \textbf{Recall:} El \emph{Recall} o Exhaustividad contempla cuantos elementos, calificados o no, lo han sido correctamente. En nuestro caso representaría cuantos defectos del total de los presentes en la imagen se han marcado correctamente. A veces se le da una menor importancia que a la Precisión.
+        \[
+    Recall = \frac{TP}{TP+FN}
+    \]
+    
+    \item \textbf{F1:} El F1 o \emph{F-score} es la media armónica de las dos anteriores. La principal característica de este valor es que grandes diferencias de valores no determinan tanto su resultado como podría observarse de realizar la media aritmética, por ejemplo.
+    \[
+    F1 = \frac{2 \cdot (Precision \cdot Recall)}{Precision + Recall}
+    \]
+\end{itemize}
+
+\clearpage
+
+\section{Formato de objetos COCO: \emph{Common Objects in COntext} \label{TeoriaFormatoCOCO}} 
+Para este proyecto y la utilización de Detectron 2, se ha trabajado con un formato de etiquetado de las imágenes basado en ficheros JSON que acompañando a una imagen original y sin necesidad de la máscara binaria es capaz de señalar la región etiquetada como objeto.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{CocoFormato}
+	\caption[Estructura de las anotaciones JSON COCO]{Estructura de las anotaciones JSON COCO}
+	\label{figuraAnotaciones}
+\end{figure}
+
+El fichero tiene 3 apartados que son \emph{Images}, \emph{Categories} y \emph{Annotations}. Junto con las imágenes originales sirve para el registro de las imágenes tanto para el conjunto de validación ó test como para el de entrenamiento.
+
+\begin{itemize}
+    \item \textbf{Images:} Conecta cada fichero de imagen con un identificador y dimensiones.
+    \item \textbf{Categories:} Registra el tipo de objetos, clases, que hay en el conjunto, también con un identificador.
+    \item \textbf{Annotations:} Contiene el identificador de un objeto, categoría a la que pertenece, si es o no un conjunto de objetos, pares de coordenadas que indican la región que ocupa, identificador de la imagen registrada al principio, área total que ocupa el objeto y \emph{bounding box} que lo engloba.
+    
+\end{itemize}
+

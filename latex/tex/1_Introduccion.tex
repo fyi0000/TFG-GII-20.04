@@ -1,0 +1,89 @@
+\capitulo{1}{Introducción}
+
+A medida que el proceso industrial se ha desarrollado, también lo han hecho numerosas técnicas de fabricación, permitiendo reducir las fases de fabricación de piezas metálicas y no es posible realizar exámenes visuales en puntos intermedios de la fabricación.
+
+Esto significa que el examen visual convencional, además de pasar por alto posibles defectos internos o apenas visibles, adquiere un mayor nivel de dificultad a la hora de manipular y observar la pieza, aumentando el tiempo invertido y coste invertido en esta fase. La aplicación de imágenes tomadas por \emph{Rayos X} han revolucionado este proceso, facilitándolo en gran medida y llevándolo a un nivel de detalle superior. 
+
+Durante la fabricación de piezas metálicas en concreto, pueden darse determinados defectos no perceptibles a simple vista que pueden afectar a la integridad de la pieza en un futuro provocando su rotura o desgaste. Los más comunes son grietas de soldadura que se han ido extendiendo y burbujas que pueden tener su origen en espacio vacío o aire contenido en el propio material.
+
+A partir de este punto pueden tomarse dos caminos, el Análisis No Destructivo, o el Destructivo, de la pieza.
+
+\subsection{Análisis No Destructivo}
+Se realizan con el objetivo de no alterar la pieza, ni a nivel estructural ni interno. Incluyen algunas pruebas en las que intervienen determinados fluidos en los que se puede sumergir la pieza, análisis meramente visual personal de la pieza por parte de un operario ó el método basado en radiografías que se aborda en este proyecto.
+
+Como resultado se debería de obtener unas observaciones lo más completas posible permitiendo que la pieza objetivo pueda continuar en la línea de producción hasta su finalización y venta.
+
+\subsection{Análisis Destructivo}
+El objetivo es un análisis más profundo, por lo que la pieza se ve alterada de múltiples formas ya sea mediante compuestos químicos, cortes o impactos y desgaste prolongado que busca simular el uso continuado que tendrá la pieza una vez se le de el uso correspondiente.
+
+Por ejemplo existe el \emph{Ensayo de dureza Vickers} que consiste en perforar una pieza con el objetivo de poner a prueba la dureza del material, lo que a pesar de otorgar unos resultados fiables, significa que la pieza sobre la que se realizan las pruebas ya no podrá ser utilizada y será desechada una vez concluidas las pruebas.
+
+
+A continuación se detallan las ventajas y desventajas entre los mismos:
+
+    \textbf{Ventajas}
+    \begin{itemize}
+        \item{Análisis No Destructivo}
+            \begin{itemize}
+                \item La pieza se conserva intacta al final de las pruebas
+                \item Tiempo de ejecución reducido
+                \item Especialmente útil para piezas de alto valor
+            \end{itemize}
+        \item{Análisis Destructivo}
+            \begin{itemize}
+                \item Técnicas más experimentadas
+                \item Permite pruebas directas sobre el interior de la propia pieza
+                \item Es posible analizar la composición del metal
+            \end{itemize}
+            
+    \textbf{Desventajas}
+        \item{Análisis No Destructivo}
+            \begin{itemize}
+                \item Se requiere experiencia para su práctica
+                \item Inversión inicial significativa
+            \end{itemize}
+        \item{Análisis Destructivo}
+            \begin{itemize}
+                \item La pieza es destruida
+                \item Mayor coste a largo plazo
+                \item Más tiempo para su ejecución
+            \end{itemize}
+    \end{itemize}
+    
+A las ventajas del \emph{Análisis No Destructivo} se pretende añadir la detección automática de estos defectos en las imágenes que ya se han tomado gracias a los \emph{Rayos X}, de forma que con la ayuda de una Red Neuronal entrenada se reduzcan aún más los tiempos de análisis de este tipo de fotografías durante la fase de control de calidad.
+
+\subsection{Mejora del Proyecto}
+Como mejora significativa del Proyecto, se ha trabajado con radiografías de piezas etiquetadas por D. José Francisco Díez Pastor y D. Pedro Latorre Carmona. Gracias a esto, el modelo se ha desarrollado para ejecutarse sobre un conjunto propio, de forma que el modelo se ha entrenado y desarrollado para funcionar sobre un conjunto objetivo propio.
+
+También y gracias al uso de \emph{Detectron2} ha sido posible el uso de bibliotecas de programación más potentes.
+Además de visualización de resultados algo más interactiva en un visor web.
+
+\section{Estructura de la memoria}
+
+Esta memoria incluye los siguientes apartados:
+
+\begin{itemize}
+    \item \textbf{Introducción:} Breve descripción del problema a resolver y la solución propuesta. Estructura de la memoria y listado de materiales adjuntos.
+    \item \textbf{Objetivos del proyecto:} Exposición de los    objetivos generales, técnicos y personales del proyecto.
+    \item \textbf{Conceptos teóricos:} Breve explicación de los conceptos teóricos necesarios para la comprensión y el desarrollo del proyecto.
+    \item \textbf{Técnicas y herramientas:} Presentación de las técnicas metodológicas y las herramientas de desarrollo que se han utilizado para llevar a cabo el proyecto.
+    \item \textbf{Aspectos relevantes del desarrollo:} Listado o exposición de los aspectos más importantes durante el desarrollo del proyecto.
+    \item \textbf{Trabajos relacionados:} Breve resumen de los trabajos y proyectos vinculados con la detección de defectos en imágenes de rayos-X y el estado del arte del proyecto.
+    \item \textbf{Conclusiones y líneas de trabajo futuras:} Conclusiones obtenidas al final del proyecto y exposición de posibles mejoras o líneas de trabajo futuro.
+\end{itemize}
+    
+\clearpage
+
+\section{Materiales adjuntos}
+
+Anexos aportados junto a la memoria:
+
+\begin{itemize}
+    \item \textbf{Plan del proyecto software:} Planificación temporal y estudio de viabilidad económica y legal del proyecto.
+    \item \textbf{Especificación de requisitos del software:} Objetivos generales, catálogo de requisitos del sistema y especificación de requisitos funcionales y no funcionales.
+    \item \textbf{Especificación de diseño:} Diseño de datos, diseño procedimental y diseño arquitectónico.
+    \item \textbf{Manual del programador:} Estructura de directorios, manual del programador, compilación, instalación, ejecución y pruebas (aspectos relevantes del código fuente).
+    \item \textbf{Manual de usuario:} Requisitos de usuarios, instalación, manual de usuario.
+\end{itemize}
+
+\textbf{El repositorio de \emph{Github} del proyecto se encuentra en}: \url{https://github.com/fyi0000/TFG-GII-20.04}

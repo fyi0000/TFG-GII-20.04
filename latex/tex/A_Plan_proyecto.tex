@@ -1,0 +1,203 @@
+\apendice{Plan de Proyecto Software}
+
+\section{Introducción}
+
+En este apartado se recoge la planificación temporal que se ha seguido durante el desarrollo del proyecto, analizando los pasos seguidos en cada una de las fases y el estudio de la viabilidad tanto económica como legal que tendría el desarrollo del proyecto. 
+
+\section{Planificación temporal}
+
+En este proyecto se ha aplicado la metodología \emph{Scrum}, por lo que se han ido estableciendo unos objetivos conforme se avanzaba el desarrollo y se han ido dividiendo en \emph{sprints}. Estos normalmente compuestos de \emph{issues} o puntos relevantes a abordar hasta el siguiente \emph{sprint}.
+
+En determinadas ocasiones y en caso de que las tareas llevasen más o menos tiempo, era posible adelantar o retrasar las reuniones semanales para optimizar el tiempo. El objetivo no era hacer muchas tareas simultáneamente sino tener siempre ciertas tareas en proceso para que el desarrollo fuese constante.
+
+Para la gestión del proyecto se utilizó la plataforma de desarrollo colaborativo \emph{Github}. El repositorio puede encontrase en \url{https://github.com/fyi0000/TFG-GII-20.04}. 
+
+Paralelamente y aunque se hizo de forma personal y se ha ido modificando, también se llevó un diario de tareas posibles o conceptos en la plataforma \emph{Trello}. Esta plataforma permite la organización temporal según se personalice en diferentes tarjetas o \emph{boxes} que pueden eliminarse, editarse o asignarse a otras tareas según se considere. 
+
+\subsection{Sprint 0: Introducción y revisión}
+Durante este primer \emph{sprint} se concertó una reunión y se estableció un plan de fechas en \emph{Microsoft Teams} para las posteriores semanas. A su vez se introdujo el trabajo anterior de la compañera \emph{Noelia Ubierna Fernández} realizado el año pasado.
+
+Se comentaron las mejoras y principales diferencias respecto al anterior. Marcando como objetivo que el funcionamiento se basase en un conjunto de imágenes propias en lugar de un repositorio de terceros \cite{repositorio:ferguson}.
+
+Por ello primero se establecieron los puntos:
+
+\begin{itemize}
+    \item Inicializar el repositorio y la toma de documentación
+    \item Descarga de imágenes propias
+    \item Descarga y ejecución con las imágenes objetivo actuales en la herramienta del año pasado
+\end{itemize}
+
+\subsection{Sprint 1: Conclusiones y decisiones}
+Tras las pruebas iniciales en las imágenes que se marcaron como objetivo se observó que el comportamiento no era el más adecuado, si bien esto se esperaba al estar la red neuronal entrenada sobre un conjunto de imágenes distinto al de las imágenes segmentadas por los propios tutores.
+
+Se contemplaron alternativas y modelos parecidos a \emph{Mask R-CNN} que utilizaba la antigua herramienta.
+
+La principal tarea de este \emph{sprint} se estableció en estudiar la viabilidad de utilizar la herramienta \emph{Detectron2}. 
+
+\subsection{Sprint 2: Registro de imágenes y pruebas}
+Finalmente se decidió que el proyecto comenzaría desde 0 utilizando \emph{Detectron2}.
+
+El primer paso para su uso era el estudio del formato \emph{COCO} (\emph{Common Objects in Context}) para el registro del conjunto y posterior entrenamiento. Este formato se ha detallado en la memoria del proyecto, consiste en la generación de un fichero \emph{JSON} que recoge las imágenes y sus correspondientes nombres de fichero asignándoles un identificador, clases presentes en el conjunto y las anotaciones. Este último punto especifica como es la forma de un defecto y que espacio ocupa dentro de la imagen además de relacionar cada uno con las distintas imágenes que forman el conjunto.
+
+Por ello los tutores facilitaron el acceso a la computadora de la Universidad \emph{Alpha}.
+
+Los objetivos fueron:
+
+\begin{itemize}
+    \item Introducirse y documentarse al registro de imágenes en formato \emph{COCO}
+    \item Primeras pruebas con las imágenes del repositorio de \emph{Max Ferguson} \cite{repositorio:ferguson}
+\end{itemize}
+
+\subsection{Sprint 3: Cambio de entorno y primeros resultados}
+Durante el desarrollo del anterior \emph{sprint} se ``descubrió'' el entorno \emph{Google Colaboratory} y la facilidad de uso del mismo. Si bien ya se conocía la herramienta \emph{Azure} de \emph{Microsoft}. 
+
+La documentación oficial de \emph{Detectron2} y numerosos usuarios utilizaban este entorno así que en lugar de realizar el desarrollo y pruebas en la máquina \emph{Alpha} de la Universidad, se realizaría finalmente en \emph{notebooks} alojados en la plataforma de \emph{Google}. Esto facilitaría el uso repetido ya que no es necesario el uso de \emph{VPN} para su acceso.
+
+Los primeros resultados del registro fueron positivos y se consiguió un \emph{notebook} que:
+
+\begin{itemize}
+    \item Recorría las imágenes y estandarizaba los nombres
+    \item Generaba el fichero \emph{JSON} con cada una de las secciones
+    \item Recorría los directorios y emparejaba las máscaras individualizadas de cada defecto con la imagen correspondiente
+\end{itemize}
+
+\subsection{Sprint 4: Primer Entrenamiento}
+Durante este \emph{sprint}:
+
+\begin{itemize}
+    \item Se completó el registro de todas las imágenes propias
+    \item Se comprobó la correcta integración del conjunto con \emph{Detectron2}
+    \item Se realizó el primer entrenamiento provisional
+\end{itemize}
+
+Los resultados fueron positivos y se planificó continuar las pruebas de entrenamiento, variando valores y distribución de los conjuntos de entrenamiento y test.
+
+\subsection{Sprint 5: Entrenamientos y estudio de gráficas}
+
+\begin{itemize}
+    \item Se ajustaron los valores de entrenamiento para mejorar los resultados
+    \item Con la herramienta integrada de \emph{Detectron2} llamada \emph{TensorBoard} se observaron las gráficas de \emph{loss} durante entrenamiento y test. Este parámetro representa la eficiencia del modelo sobre el conjunto de entrenamiento y test respectivamente además de servir como referencia para determinar fenómenos como el sobreentrenamiento.
+    \item Se observaron las primeras anomalías de entrenamiento
+\end{itemize}
+
+En este paso ya se comenzaron a comprobar efectos de sobreentrenamiento en el conjunto.
+
+También se implementaron las métricas \emph{Precision, Recall} y F1 para evaluar el rendimiento del modelo sobre las máscaras reales.
+
+\subsection{Sprint 6: Refinamiento y despliegue web}
+Una vez obtenido un modelo eficiente y que cumpliese los mínimos establecidos, se decidió que la ejecución de la herramienta se realizaría mediante el \emph{microframework} \emph{Flask} que utiliza el lenguaje \emph{Python}.
+
+Es en este punto cuando se observa el desarrollo en \emph{sprints} marcados como hitos en el repositorio \cite{repositorio:propio}
+
+A partir de este punto se empiezan a registrar los avances en el repositorio, ya que se hizo uno de prueba y la multitud de cambios realizados en simplemente dos \emph{notebooks} no representaban demasiados avances.
+
+A su vez, para estudiar el comportamiento del modelo dependiendo de la forma del registro de los modelos, 1 imagen por defecto ó 1 imagen conteniendo todos los defectos, se elaboró otro \emph{notebook} basado en el anterior que dividía nuestras máscaras binarias. 
+El proceso consistía en reconocer las secciones conexas de la imagen, que presentaban defectos y generar una imagen propia conteniendo dicha región. Además los nombres se generaban de forma que fuese sencillo de relacionar cada imagen original con las múltiples asociadas. No significó diferencia en los resultados.
+
+\subsection{Sprint 7: Avances en \emph{Flask}}
+Los sucesivos avances marcados como los dos primeros \emph{milestones} en el repositorio consistieron en:
+
+\begin{itemize}
+    \item Generar una sencilla web en \emph{Flask} que a su vez pudiese contenerse en una imagen \emph{Docker}
+    \item Probar el funcionamiento de los \emph{Dockerfile}
+    \item Añadir gráficos \emph{Plotly} tanto para la presentación de resultados como para el histórico
+    \item Añadir \emph{slider} que permite establecer el mínimo de \emph{score} o confianza para que se muestre un defecto
+    \item Estudiar el funcionamiento de \emph{Bootstrap}
+\end{itemize}
+
+Se generó también una clase propia que manipulase \emph{Detectron2} y permitiese su interacción con la aplicación web.
+
+\subsection{Sprint 8: Finalización y últimos ajustes}
+En este \emph{sprint} se finalizó la aplicación web y se ajustó \emph{Bootstrap} para la mejora de la apariencia general de la misma.
+Se comenzaron a depurar errores que surgieron en la aplicación meramente estéticos con la introducción de \emph{Bootstrap}
+
+Se realizaron comprobaciones finales y se comenzó con la documentación al tener un contenido consistente.
+
+\clearpage
+
+\section{Estudio de viabilidad}
+A continuación se estudiará la viabilidad económica del proyecto contemplando los diferentes costes de personal y equipo y la viabilidad legal que engloba el uso de licencias gratuitas o la compra de las mismas.
+
+\subsection{Viabilidad económica}
+Esta sección se dividirá por un lado el coste relacionado con las personas implicadas y por otro, el equipo junto con software y hardware utilizado.
+
+\subsubsection{Coste de personal}
+Para el desarrollo del proyecto se han observado dos fases relevantes, 
+\begin{itemize}
+    \item Entrenamiento y \emph{Deep Learning}
+    \item Desarrollo Web
+\end{itemize}
+Sin embargo, a pesar de ser dos fases casi independientes, la dependencia la una de la otra es tal que es perfectamente viable el desarrollo completo por parte de un único trabajador. No se tiene en cuenta posteriores mejoras como la segmentación de más imágenes para las que podría ser necesario personal más especializado.
+
+\subsubsection{Salario de personal}
+Para la consulta del salario de un desarrollador que fuese capaz de hacer ambas tareas se ha consultado la web \emph{PayScale} que analiza perfiles y ofrece estadísticas salariales según puesto, experiencia o rama que se ocupa en un campo.\url{https://www.payscale.com/research/ES/Job=Web_Developer/Salary}
+
+A pesar de recoger distintos perfiles, se tendrá en cuenta la rama general de \emph{Web Developer} en España con 1-2 años de experiencia. 
+Esto significa un sueldo al mes de 18000\(/12\)\ =1500\euro.
+
+\tablaSmallSinColores{Costes de personal}{p{6.0cm} p{2.0cm} p{8cm}}{salario}{
+  \multicolumn{1}{p{4.5cm}}{\textbf{Concepto}} & \textbf{Valor{}}\\
+ }{
+  Salario anual bruto  & \multicolumn{1}{r}{18.000}\\
+  Cotización a la Seguridad Social & \multicolumn{1}{r}{-1.143}\\
+  IRPF 10,89\%  & \multicolumn{1}{r}{-1.888}\\\hline
+  \textbf{Sueldo Neto Anual}  & \multicolumn{1}{r}{14.968}\\
+  }
+
+Por ello si el proyecto se alargase unos 6 meses el coste total en personal sería de la mitad del anual, 7.484 \euro.
+
+\subsubsection{Coste de equipo}
+En cuanto al equipo se debe remarcar que \emph{Flask} es un \emph{miniframework} que no está especialmente diseñado para la respuesta a múltiples peticiones y suele utilizarse en un ámbito más local, como es el presente caso.
+Si se quisiese desplegar la aplicación en una escala mayor, se debería contemplar la migración a otros \emph{frameworks} o por ejemplo su alojamiento en \emph{Google Colab} que incluso utilizando la versión Pro, el uso prolongado estaría limitado a 24h.
+
+Un servicio de \emph{hosting} limitado y no demasiado tráfico disponible, podría rondar al año en torno a los 100\euro, que no se contabilizarán en el total ya que en un uso industrial, el despliegue a nivel local puede ser suficiente según necesidades.
+
+\clearpage
+
+\subsubsection{Hardware}
+Inicialmente y se se hubiese utilizado la máquina \emph{Alpha} el precio a contemplar sería mucho más alto.
+Pero como finalmente se ha hecho uso de \emph{Google Colaboratory} y que la versión Pro, de pago, no parece a priori necesaria, se sumarán 500 euros al total. Esto teniendo en cuenta un equipo sencillo que permita un desarrollo web mínimo y acceso a la plataforma de \emph{Google.} Luego:
+
+\tablaSmallSinColores{Costes Finales}{p{6.0cm} p{2.0cm} p{8cm}}{costefinal}{
+  \multicolumn{1}{p{4.5cm}}{\textbf{Concepto}} & \textbf{Valor{}}\\
+ }{
+  Salario de personal  & \multicolumn{1}{r}{7.484}\\
+  Equipo mínimo  & \multicolumn{1}{r}{500}\\\hline
+  \textbf{Coste Total}  & \multicolumn{1}{r}{7.984}\\
+  }
+  
+\subsection{Viabilidad legal}
+En cuanto a la viabilidad legal, tanto las bibliotecas de \emph{Python} como el uso de \emph{Google Colab} permiten el uso gratuito y no presentan problemas para el uso comercial.
+
+Un punto importante es el uso de imágenes, normalmente privadas, que tendría que facilitar bajo permiso una empresa interesada para su uso en el proyecto. Sin dichas imágenes solo se podría recurrir a imágenes de dominio público.
+
+Esto podría representar un serio problema ya que se requiere de una cantidad mínima de imágenes con las características necesarias para que el modelo esté balanceado. Además es común que este tipo de imágenes correspondan a diferentes piezas y harían falta diferentes enfoques de la misma para que el entrenamiento fuese fiable.
+
+Es uno de los puntos más importantes ya que depende de él la eficiencia del producto final.
+
+\clearpage
+
+\subsubsection{Bibliotecas utilizadas}
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{>{\centering\arraybackslash}m{5cm} >{\centering\arraybackslash}m{5cm} p{9cm}}
+			\textbf{Biblioteca} & \textbf{Licencia}\\ \hline \hline
+			OpenCV & MIT License (MIT)\\ \hline
+			Requests & Apache Software License (Apache 2.0)\\ \hline
+			Numpy & BSD License (BSD)\\ \hline
+			Pandas & BSD License (BSD\\ \hline
+			Plotly & MIT License (MIT)\\ \hline
+			Matplotlib & BSD License (BSD) Compatible\\ \hline
+			PIL & Historical Permission Notice and Disclaimer (HPND) (HPND)\\ \hline
+			scikit-image & BSD License (Modified BSD)\\ \hline
+			Werkzeug & BSD License (Modified BSD)\\ \hline
+			gdown & MIT License (MIT)\\ \hline
+			urllib & MIT License (MIT)\\ \hline
+			wget & Public Domain (Public Domain)\\ \hline
+		\end{tabular}
+		\caption{Bibliotecas de \emph{Python} utilizadas y sus licencias}
+		\label{Licencias}
+	\end{center}
+\end{table}
+
+Y por último, tanto \emph{Detectron2} como \emph{Docker}, en su versión \emph{Community} tienen licencia \emph{Apache License 2.0}, que permite el uso comercial con los debidos créditos. Repositorio oficial de \emph{Detectron2}: \url{https://github.com/facebookresearch/detectron2}

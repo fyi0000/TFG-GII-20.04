@@ -1,0 +1,95 @@
+\capitulo{4}{Técnicas y herramientas}
+
+\section{Metodología Ágil y Scrum}
+
+Para la organización y planificación del proyecto se ha seguido la metodología ágil \emph{Scrum}, mediante reuniones en las que se reparte cada semana el trabajo para la siguiente a la vez que se revisaban los resultados del trabajo de la anterior determinando iteraciones o \emph{Sprints}. De esta forma según se desarrollado un determinado Sprint se ha adaptado el margen temporal alargándolo o acortándolo según la situación lo ha requerido.
+
+\section{Control de Versiones y Gestión de Proyectos}
+
+\subsection{Git y Github} 
+
+Tanto Git\footnote{Git: https://git-scm.com/} como Github\footnote{Github: https://github.com/} se han utilizado para el control de versiones y gestión del proyecto se han utilizado ambas herramientas para el versionado de los ficheros de código y su alojamiento en la nube además de la organización de \emph{Milestones}, \emph{Issues} entre otros.
+\clearpage
+
+\section{Herramientas}
+
+El proyecto se ha desarrollado en el lenguaje \emph{Python} que presenta un gran dinamismo y adaptación específica para este proyecto debido a la multitud de librerías disponibles orientadas a innumerables objetivos pero específicamente al \emph{Machine Learning}.
+
+\subsection{jQuery}
+De forma bastante sencilla se ha utilizado mediante \emph{CDN} para evitar la descarga, \emph{jQuery}\footnote{jQuery: https://jquery.com/} junto con peticiones \emph{Ajax}. Debido a que no se tenía demasiada experiencia en este aspecto, ha sido muy interesante utilizar peticiones asíncronas para, por ejemplo, mostrar un \emph{loader} o animación sencilla de carga sin necesidad de recargar la página. 
+
+De esta forma en lugar de recargar el fichero \emph{HTML} cada vez que se realiza un cambio, la aplicación es algo más dinámica.
+
+\subsection{Google Colab}
+\emph{Google Colaboratory}\footnote{Google Colab: https://colab.research.google.com/notebooks/welcome.ipynb?hl=es} o Colab se ha utilizado para el desarrollo y ejecución de gran parte del proyecto junto con los \emph{Notebooks}, ficheros también utilizados en \emph{Anaconda} para el desarrollo en \emph{Python} que se caracterizan por su organización del código en celdas.
+
+Similar a \emph{Azure} de Microsoft permite la ejecución y desarrollo en la nube además de la utilización de las GPU de \emph{Google} que son perfectas para la fase de entrenamiento en el proceso de Machine Learning, reduciendo significativamente los tiempos de ejecución, entrenamiento y descarga. También tiene disponible la TPU (Tensor Processing Unit), unidad especializada en trabajar con grandes matrices de datos que utilizan las redes neuronales.
+
+Su uso es gratuito aunque la ejecución continuada de código tiene límites temporales.
+
+\subsection{Pycharm}
+\emph{Pycharm}\footnote{Pycharm: https://www.jetbrains.com/pycharm/} es un IDE para \emph{Python} desarrollado por \emph{JetBrains} con múltiples funcionalidades para pruebas, gestión de entornos virtuales para \emph{Python} e integración de herramientas para la gestión de proyectos.
+
+Utilizado bajo la licencia anual gratuita para los estudiantes universitarios.
+
+\subsection{Visual Studio Code}
+\emph{Visual Studio Code}\footnote{Visual Studio Code: https://azure.microsoft.com/es-es/products/visual-studio-code/} es un editor de código ligero de \emph{Microsoft} cuya principal ventaja es la facilidad de gestión de extensiones con múltiples funcionalidades como corrección de código, sincronización con la nube, terminal integrada e incluso desarrollo concurrente y simultáneo.
+
+\subsection{Docker}
+\emph{Docker}\footnote{Docker: https://www.docker.com/} es un sistema de contenedores que sustituye a las máquinas virtuales convencionales, de forma que es posible crear un entorno totalmente aislado que trabaje en un sistema Unix pero ejecutado en un sistema anfitrión \emph{Windows} ó viceversa. Esto facilita la ejecución de aplicaciones propias de un sistema concreto de forma totalmente aislada sin importar el sistema que se utiliza en el anfitrión.
+
+Además gracias a los \emph{Dockerfiles}, mediante un simple fichero es posible construir una imagen con unos requerimientos específicos a partir de la cual se pueden generar contenedores propiamente dichos en un tiempo muy reducido, éstos son independientes pero presentan las mismas funcionalidades base heredadas de la imagen.
+
+\section{Frameworks y Bibliotecas de Python}
+
+\subsection{Flask}
+\emph{Flask}\footnote{Flask: https://flask.palletsprojects.com/en/1.1.x/} es un \emph{micro-framework} orientado a creación de aplicaciones web de una forma sencilla y con una base muy sencilla pero con unas capacidades extensibles. Por ejemplo no tiene una integración directa con bases de datos pero que mediante el uso de plugins puede utilizarse rápidamente.
+
+Es Open-Source, tiene gestión de sesiones, cookies y tiene su propio servidor para alojar la aplicación en una máquina junto con un modo desarrollador que evita que cuando se realizan cambios sea necesario relanzar la aplicación una y otra vez.
+
+\subsection{NumPy}
+\emph{NumPy}\footnote{NumPy: https://numpy.org/} es una librería de \emph{Python} que se especializa en la manipulación de variables numéricas y matriciales con múltiples funciones que facilitan enormemente la manipulación conjunta de los datos como filtrado, copia, álgebra, etc.
+
+En este proyecto será especialmente útil para la manipulación de imágenes y las matrices que las representan.
+
+\subsection{Pandas}
+\emph{Pandas}\footnote{Pandas: https://pandas.pydata.org/} es una librería especialmente utilizada para la manipulación de estructuras de datos y más especialmente tablas o ficheros \emph{CSV}. Organiza los datos en \emph{DataFrames} que permiten el uso de los datos a gran escala y con gran cantidad de registros e instancias. 
+
+\subsection{OpenCV}
+\emph{OpenCV}\footnote{OpenCV: https://opencv.org/} es una librería Open-Source que incluye múltiples algoritmos de visión y reconocimiento artificial por computación mediante manipulación de información multimedia.
+
+\subsection{Pillow}
+\emph{Pillow}\footnote{Pillow: https://python-pillow.org/} es una librería orientada a la manipulación de imágenes en \emph{Python}. Permite trabajar con las distintas capas de la imagen además del guardado y carga de múltiples ficheros de imagen.
+
+\subsection{Scikit-image}
+\emph{Scikit-image}\footnote{Scikit-image: https://scikit-image.org/} es una biblioteca de algoritmos para trabajar con imágenes aplicando distintos métodos y técnicas para, por ejemplo, el reconocimiento y segmentación de imágenes, morfología o visualización.
+
+\subsection{Matplotlib}
+\emph{Matplotlib} \footnote{Matplotlib: https://matplotlib.org/} se utiliza para la visualización de contenido estático en \emph{Python}, permite la utilización de ejes, creación de composiciones de imagen para la muestra de diferentes contenidos además de la manipulación de gráficos.
+
+En este proyecto será utilizado para la visualización y presentación de resultados.
+
+\subsection{Plotly}
+\emph{Plotly}\footnote{Plotly: https://plotly.com/} es una revolucionaria librería para el análisis y manipulación de datos además de la generación de gráficos y elementos de visualización de forma sencilla pero muy polivalentes. Presenta multitud de figuras que pueden personalizarse para casos concretos. 
+Además de un dinamismo importante gracias a su integración con \emph{JavaScript} para la creación de figuras independientes y conversores que permiten trabajar con gráficos y figuras de otras librearías como \emph{Matplotlib}.
+
+También será utilizado para la presentación dinámica de resultados.
+
+\subsection{Wget}
+\emph{Wget}\footnote{Wget:https://www.gnu.org/software/wget/} es una herramienta gratuita utilizada para la descarga de contenido web utilizando múltiples protocolos como \emph{HTTPS} o \emph{FTPS}. Permite la gestión de directorios y operaciones en segundo plano.
+
+\subsection{Gdown}
+\emph{Gdown}\footnote{Gdown: https://github.com/wkentaro/gdown} ha sido creada por un grupo de usuarios en \emph{Github} que permite la descarga de ficheros de un tamaño significativo alojados en \emph{Google Drive}.
+
+Su uso se destinará a la gestión del modelo utilizado en la red neuronal para posibilitar su actualización una vez desplegada la aplicación.
+
+\section{Documentación}
+
+\subsection{\LaTeX}
+\LaTeX\footnote{\LaTeX: https://www.latex-project.org/} es un sistema para la generación de textos que incluye tanto texto plano como comandos para la elaboración automática documentos con formatos y presentaciones elaboradas.
+
+\subsection{Overleaf}
+\emph{Overleaf}\footnote{Overleaf: https://www.overleaf.com/} es un editor online del sistema \LaTeX que permite la creación y compilación de este tipo de documentos de forma remota además de incluir corrector ortográfico, directorio de proyectos y sistema colaborativo de forma gratuita.
+
+\subsection{Draw.io}
+\emph{Draw.io}\footnote{Draw.io: https://www.diagrams.net/} es una aplicación para la generación de diagramas, es gratuita y contiene multitud de plantillas para hacer desde diagramas de clases hasta gráficos científicos más elaborados.
