@@ -8,6 +8,8 @@ Detección de defectos en piezas metálicas usando radiografías y Deep Learning
 - Muestra de resultados de forma interactiva gracias a [Plotly]
 - Registro de histórico de detecciones y posibilidad de descarga de resultados
 
+![alt text](https://github.com/fyi0000/TFG-GII-20.04/blob/main/latex/img/preview.png?raw=true)
+
 ## Requisitos
 Oficialmente Detectron2 no es compatible con Windows a pesar de que algunos usuarios han conseguido compatibilizar algunas depenencias
 Por ello los requisitos son:
